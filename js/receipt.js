@@ -10,13 +10,13 @@ const Receipt = {
   editId: null,
   selectedEmployee: null,
   
-  init() {
+  async init() {
     this.form = document.getElementById('receiptForm');
     this.recentTable = document.getElementById('recentTable');
     this.bindEvents();
-    this.loadRecent();
     FormPersist.restore(this.form);
-    Employee.load();
+    await Employee.load();
+    this.loadRecent();
     
     // Set default amount
     const amountEl = this.form.querySelector('[name="amount"]');

@@ -74,6 +74,7 @@ const Auth = {
       if (this.user) {
         localStorage.setItem(CONFIG.STORAGE_KEYS.USER, JSON.stringify(this.user));
         this.updateUserUI();
+        document.dispatchEvent(new CustomEvent('auth:success'));
         return true;
       }
     } catch (err) {
