@@ -135,15 +135,27 @@ const Receipt = {
       }
       
       const receiptNo = data['Receipt No.'] || '';
-      Auth.showToast((this.editMode ? 'Receipt updated' : 'Receipt saved') + (receiptNo ? ' — #' + receiptNo : ''));
+      const msg = (this.editMode ? 'Receipt updated' : 'Receipt saved') + (receiptNo ? ' — #' + receiptNo : '');
+      this.showFormMessage(msg, 'success');
+      Auth.showToast(msg);
       this.clearForm();
       this.loadRecent();
     } catch (err) {
+      this.showFormMessage('Error: ' + err.message, 'error');
       Auth.showToast('Error: ' + err.message, 'error');
     } finally {
       btn.disabled = false;
       btn.textContent = originalText;
     }
+  },
+  
+  showFormMessage(msg, type) {
+    const el = document.getElementById('formMessage');
+    if (!el) return;
+    el.textContent = msg;
+    el.className = 'form-message ' + type;
+    clearTimeout(this._formMsgTimer);
+    this._formMsgTimer = setTimeout(() => { el.className = 'form-message hidden'; }, 5000);
   },
   
   async saveEmployeeEdits(formData) {
@@ -281,6 +293,11 @@ const Receipt = {
     this.form.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
     this.selectedEmployee = null;
     
+    // Hide form message
+    const msgEl = document.getElementById('formMessage');
+    if (msgEl) msgEl.className = 'form-message hidden';
+    clearTimeout(this._formMsgTimer);
+    
     // Reset defaults
     const amountEl = this.form.querySelector('[name="amount"]');
     if (amountEl) amountEl.value = '200';
@@ -308,9 +325,12 @@ const Receipt = {
         Auth.token
       );
       
-      this.renderRecentTable(res.data, res.pagination);
+      const result = res.data;
+      this.renderRecentTable(result.data || [], result.pagination || { page: 1, pageSize: 10, total: 0, totalPages: 0 });
     } catch (err) {
       console.error('Failed to load recent:', err);
+      const tbody = document.getElementById('recentTbody');
+      if (tbody) tbody.innerHTML = '<tr><td colspan="7" class="empty">Failed to load receipts</td></tr>';
     }
   },
   

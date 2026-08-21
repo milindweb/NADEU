@@ -112,6 +112,12 @@ function employeeDelete(token) {
   return { success: false };
 }
 
+// ---------- Sync (stub) ----------
+
+function employeeSyncFromSeniority() {
+  return fail_('Seniority sync is not configured. Use standalone employee management.');
+}
+
 // ---------- Get Headers (for dynamic form) ----------
 
 function employeeGetHeaders() {
