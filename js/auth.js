@@ -69,6 +69,7 @@ const Auth = {
 
     try {
       const res = await API.currentUser(this.token);
+      if (!res.user) throw new Error('User not found');
       this.user = res.user;
       if (this.user) {
         localStorage.setItem(CONFIG.STORAGE_KEYS.USER, JSON.stringify(this.user));

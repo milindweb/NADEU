@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
     btn.disabled = true;
 
     API.login(username, password, remember).then(function (res) {
+      if (!res.user) throw new Error('Login failed: no user data returned.');
       localStorage.setItem(CONFIG.STORAGE_KEYS.TOKEN, res.user.token);
       localStorage.setItem(CONFIG.STORAGE_KEYS.USER, JSON.stringify(res.user));
       localStorage.setItem(CONFIG.STORAGE_KEYS.REMEMBER, remember);
