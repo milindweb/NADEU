@@ -139,11 +139,7 @@
         <div class="panel-header">
           <h3>Recent Receipts</h3>
           <div class="panel-controls">
-            <select id="pageSize" class="select-sm">
-              <option value="10" selected>10 per page</option>
-              <option value="20">20 per page</option>
-              <option value="30">30 per page</option>
-            </select>
+            <button id="refreshRecent" class="icon-btn" title="Refresh">&#8635;</button>
             <button id="toggleRecent" class="icon-btn" title="Collapse/Expand">&#9660;</button>
           </div>
         </div>
@@ -152,19 +148,18 @@
             <table id="recentTable">
               <thead>
                 <tr>
-                  <th data-sort="Receipt No.">Receipt No.</th>
-                  <th data-sort="Date">Date</th>
-                  <th data-sort="Employee Name">Name</th>
-                  <th data-sort="Token No.">Token</th>
-                  <th data-sort="Amount">Amount</th>
-                  <th data-sort="Status">Status</th>
-                  <th data-sort="Created At">Created</th>
+                  <th>Receipt No.</th>
+                  <th>Date</th>
+                  <th>Name</th>
+                  <th>Token</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Created</th>
                 </tr>
               </thead>
               <tbody id="recentTbody"></tbody>
             </table>
           </div>
-          <div id="pagination" class="pagination"></div>
         </div>
       </section>
 
@@ -175,10 +170,10 @@
   <div id="toastContainer"></div>
 
   <!-- Scripts -->
-  <script src="js/config.js?v=2"></script>
-  <script src="js/api-client.js?v=2"></script>
-  <script src="js/auth.js?v=2"></script>
-  <script src="js/employee.js?v=2"></script>
-  <script src="js/receipt.js?v=2"></script>
+  <script src="js/config.js?v=3"></script>
+  <script src="js/api-client.js?v=3"></script>
+  <script src="js/auth.js?v=3"></script>
+  <script src="js/employee.js?v=3"></script>
+  <script src="js/receipt.js?v=3"></script>
 </body>
 </html>

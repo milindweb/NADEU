@@ -5,7 +5,6 @@
 const Receipt = {
   form: null,
   recentTable: null,
-  pagination: { page: 1, pageSize: 10, sortBy: 'Created At', sortDir: 'desc', filters: {} },
   editMode: false,
   editId: null,
   selectedEmployee: null,
@@ -76,26 +75,8 @@ const Receipt = {
       e.target.textContent = document.getElementById('recentList').classList.contains('collapsed') ? '▶' : '▼';
     });
     
-    // Pagination
-    document.getElementById('pageSize')?.addEventListener('change', (e) => {
-      this.pagination.pageSize = parseInt(e.target.value);
-      this.pagination.page = 1;
-      this.loadRecent();
-    });
-    
-    // Sort headers via event delegation
-    document.getElementById('recentTable')?.addEventListener('click', (e) => {
-      const th = e.target.closest('th[data-sort]');
-      if (!th) return;
-      const col = th.dataset.sort;
-      if (this.pagination.sortBy === col) {
-        this.pagination.sortDir = this.pagination.sortDir === 'asc' ? 'desc' : 'asc';
-      } else {
-        this.pagination.sortBy = col;
-        this.pagination.sortDir = 'asc';
-      }
-      this.loadRecent();
-    });
+    // Refresh recent receipts
+    document.getElementById('refreshRecent')?.addEventListener('click', () => this.loadRecent());
   },
   
   renderSearchResults(results) {
@@ -329,36 +310,33 @@ const Receipt = {
   async loadRecent() {
     if (!Auth.token) return;
     
+    const tbody = document.getElementById('recentTbody');
+    if (tbody) tbody.innerHTML = '<tr><td colspan="7" class="empty">Loading...</td></tr>';
+    
     try {
-      const res = await API.getReceiptsPaginated(
-        this.pagination.page,
-        this.pagination.pageSize,
-        this.pagination.sortBy,
-        this.pagination.sortDir,
-        this.pagination.filters,
-        Auth.token
-      );
+      const res = await API.getReceipts(Auth.token);
+      const data = res.data || res;
+      const receipts = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);
       
-      const result = res.data;
-      const receipts = Array.isArray(result) ? result : (Array.isArray(result?.data) ? result.data : []);
-      const pag = result?.pagination || { page: 1, pageSize: 10, total: 0, totalPages: 0 };
-      this.renderRecentTable(receipts, pag);
+      receipts.sort((a, b) => {
+        const da = a['Created At'] || '';
+        const db = b['Created At'] || '';
+        return db.localeCompare(da);
+      });
+      
+      this.renderRecentTable(receipts);
     } catch (err) {
       console.error('Failed to load recent:', err);
-      const tbody = document.getElementById('recentTbody');
       if (tbody) tbody.innerHTML = '<tr><td colspan="7" class="empty">Failed to load receipts</td></tr>';
     }
   },
   
-  renderRecentTable(data, pagination) {
+  renderRecentTable(data) {
     const tbody = document.getElementById('recentTbody');
-    const paginationEl = document.getElementById('pagination');
-    
     if (!tbody) return;
     
     if (!data.length) {
       tbody.innerHTML = '<tr><td colspan="7" class="empty">No receipts yet</td></tr>';
-      if (paginationEl) paginationEl.innerHTML = '';
       return;
     }
     
@@ -374,47 +352,8 @@ const Receipt = {
       </tr>
     `).join('');
     
-    // Row click to edit
     tbody.querySelectorAll('tr[data-id]').forEach(row => {
       row.addEventListener('click', () => this.loadForEdit(row.dataset.id));
-    });
-    
-    // Sort indicator on headers
-    document.querySelectorAll('#recentTable th[data-sort]').forEach(th => {
-      th.classList.remove('sort-asc', 'sort-desc');
-      if (th.dataset.sort === this.pagination.sortBy) {
-        th.classList.add(this.pagination.sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
-      }
-    });
-    
-    // Pagination controls
-    this.renderPagination(pagination);
-  },
-  
-  renderPagination(p) {
-    const el = document.getElementById('pagination');
-    if (!el) return;
-    if (p.totalPages <= 1) { el.innerHTML = ''; return; }
-    
-    let html = '';
-    if (p.page > 1) html += `<button data-page="${p.page - 1}">← Prev</button>`;
-    
-    for (let i = 1; i <= p.totalPages; i++) {
-      if (i === 1 || i === p.totalPages || (i >= p.page - 1 && i <= p.page + 1)) {
-        html += `<button data-page="${i}" class="${i === p.page ? 'active' : ''}">${i}</button>`;
-      } else if (i === p.page - 2 || i === p.page + 2) {
-        html += '<span>…</span>';
-      }
-    }
-    
-    if (p.page < p.totalPages) html += `<button data-page="${p.page + 1}">Next →</button>`;
-    
-    el.innerHTML = html;
-    el.querySelectorAll('button[data-page]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        this.pagination.page = parseInt(btn.dataset.page);
-        this.loadRecent();
-      });
     });
   },
   

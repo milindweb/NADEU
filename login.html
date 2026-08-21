@@ -5,14 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#1a3a5f">
   <title>Login - NAD Employees Union</title>
+  <script src="js/config.js"></script>
+  <script>const PAGE_CONFIG = { title: 'Login', description: 'Sign in to NAD Employees Union Receipt Management System.', canonical: '/login' };</script>
+  <script src="js/seo-injector.js"></script>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/headerfooter.css">
   <link rel="manifest" href="data/manifest.json">
   <link rel="icon" type="image/png" sizes="48x48" href="img/favicon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+  <script src="js/headerfooter.js" defer></script>
 </head>
-<body>
+<body style="display:flex; flex-direction:column; min-height:100vh;">
+  <div id="header"></div>
   <div class="auth-page">
     <div class="auth-card">
       <h1>NAD Employees Union</h1>
@@ -35,7 +41,7 @@
           <label for="rememberMe">Remember me</label>
         </div>
         <div class="auth-forgot">
-          <a href="#" id="forgotPwd">Forgot password?</a>
+          <a href="forgot-password.html" id="forgotPwd">Forgot password?</a>
         </div>
         <button type="submit" class="auth-btn" id="loginBtn">Sign In</button>
         <div class="auth-msg" id="authMsg"></div>
@@ -50,8 +56,8 @@
       </div>
     </div>
   </div>
+  <div id="footer"></div>
 
-  <script src="js/config.js"></script>
   <script src="js/api-client.js"></script>
   <script src="js/login.js"></script>
 </body>

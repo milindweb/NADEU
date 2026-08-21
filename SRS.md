@@ -146,7 +146,7 @@ When a receipt is submitted, the following employee and transaction details are 
 | FR-AUTH-05 | Logout invalidates server-side session token | Must | ✅ |
 | FR-AUTH-06 | Default admin user created on first setup (`admin`/`admin123`) | Must | ✅ |
 | FR-AUTH-07 | User registration (creates user with no module access) | Should | ✅ |
-| FR-AUTH-08 | Forgot password — generates temporary password, admin must deliver | Should | ✅ |
+| FR-AUTH-08 | Forgot password — dedicated page with username/email input, generates temp password | Should | ✅ |
 | FR-AUTH-09 | Change password (authenticated user) | Should | ✅ |
 | FR-AUTH-10 | Role-based access: `admin` = full access, `user` = module list | Must | ✅ |
 | FR-AUTH-11 | Module permissions: `receipt` module; admin access via `role === 'admin'` | Must | ✅ |
@@ -227,7 +227,8 @@ When a receipt is submitted, the following employee and transaction details are 
 | FR-FE-UI-09 | Change password modal (current/new/confirm fields) via header button | Should | ✅ |
 | FR-FE-UI-10 | Shared site header/footer (navigation: Home, About, tagline, founder) | Should | ✅ |
 | FR-FE-UI-11 | About page with team info and contact form | Should | ✅ |
-| FR-FE-UI-12 | SEO: Open Graph, Twitter Cards, robots.txt, sitemap.xml | Should | ✅ |
+| FR-FE-UI-12 | Forgot password page with proper form and styling | Should | ✅ |
+| FR-FE-UI-13 | SEO: Open Graph, Twitter Cards, robots.txt, sitemap.xml | Should | ✅ |
 
 ---
 
@@ -330,9 +331,9 @@ Content-Type: text/plain (GAS workaround — application/json not supported)
 | `deleteReceipt` | receipt | `[id]` | - | Delete receipt |
 | `getRecentReceipts` | receipt | `[limit]` | - | Recent N receipts |
 | `getReceiptsPaginated` | receipt | `[page, pageSize, sortBy, sortDir, filters]` | - | Paginated list |
-| `authListUsers` | receipt:admin | [] | - | Admin: list users |
-| `authUpdateUser` | receipt:admin | [] | `{username, password?, role?, modules?, ...}` | Admin: update user |
-| `authDeleteUser` | receipt:admin | `[username]` | - | Admin: delete user |
+| `authListUsers` | receipt | [] | - | Admin: list users (requires role=admin) |
+| `authUpdateUser` | receipt | [] | `{username, password?, role?, modules?, ...}` | Admin: update user (requires role=admin) |
+| `authDeleteUser` | receipt | `[username]` | - | Admin: delete user (requires role=admin) |
 | `setupAll` | - | [] | - | Initialize all sheets |
 
 ---
@@ -340,10 +341,11 @@ Content-Type: text/plain (GAS workaround — application/json not supported)
 ## 6. User Interface Specification
 
 ### 6.1 Screens
-1. **Login Screen** (`login.html`) — Username, password, remember me, forgot password, sign in, register link
+1. **Login Screen** (`login.html`) — Username, password, remember me, forgot password link, sign in, register link
 2. **Register Screen** (`register.html`) — Username, full name, email, mobile, password, confirm password, register button
-3. **About Screen** (`about.html`) — Team info card, contact form component
-4. **Main App** (`index.html`) — Sticky header (with change password button), search section, receipt form, recent entries panel
+3. **Forgot Password Screen** (`forgot-password.html`) — Username/email input, send reset request, back to sign in
+4. **About Screen** (`about.html`) — Team info card, contact form component
+5. **Main App** (`index.html`) — Sticky header (with change password button), search section, receipt form, recent entries panel
 
 ### 6.2 Receipt Form Fields
 | Field | Type | Required | Default | Options |
@@ -397,7 +399,7 @@ Content-Type: text/plain (GAS workaround — application/json not supported)
 ### 7.4 Default Credentials
 | Role | Username | Password |
 |------|----------|----------|
-| Admin | `admin` | `0000` |
+| Admin | `admin` | `admin123` |
 
 ---
 
@@ -426,15 +428,33 @@ NADEU/
 │   ├── employee.gs        # Employee Master
 │   ├── receipt.gs         # Receipt Management
 │   └── api.gs             # Router + auth guard
-├── css/style.css          # Mobile-first styles
+├── css/
+│   ├── style.css          # Mobile-first styles (~19KB)
+│   └── headerfooter.css   # Shared header/footer styles (~2KB)
 ├── js/
 │   ├── config.js          # Frontend config
 │   ├── api-client.js      # API wrapper
-│   ├── auth.js            # Auth + theme
+│   ├── auth.js            # Auth + theme + change password
 │   ├── employee.js        # Search + cache
-│   └── receipt.js         # Form + table
+│   ├── receipt.js         # Form + table
+│   ├── login.js           # Login page handler
+│   ├── register.js        # Registration page handler
+│   ├── headerfooter.js    # Shared header/footer injection
+│   ├── seo-injector.js    # SEO meta tag injection
+│   └── contact-form.js    # Contact form handler
+├── components/
+│   └── contactform.html   # Contact form HTML component
+├── fonts/                 # FontAwesome, Bootstrap Icons, Glyphicons
+├── img/                   # Favicons, logos (16-512px)
 ├── data/manifest.json     # PWA manifest
-├── index.html             # SPA entry point
+├── login.html             # Login page
+├── register.html          # Registration page
+├── forgot-password.html   # Forgot password page
+├── about.html             # About page
+├── index.html             # Main app entry point
+├── robots.txt             # SEO robots
+├── sitemap.xml            # XML sitemap
+├── .env.original          # Environment variable template
 ├── SRS.md                 # This document
 ├── README.md              # Project documentation
 ├── CHANGELOG.md           # Version history

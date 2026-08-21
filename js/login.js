@@ -20,21 +20,6 @@ document.addEventListener('DOMContentLoaded', function () {
     pwToggle.textContent = show ? '\u{1F441}' : '\u{1F441}';
   });
 
-  document.getElementById('forgotPwd').addEventListener('click', function (e) {
-    e.preventDefault();
-    var id = prompt('Enter your username or email for password reset:');
-    if (!id) return;
-    msg.className = 'auth-msg';
-    msg.textContent = 'Sending request...';
-    API.forgotPassword(id).then(function (res) {
-      msg.className = 'auth-msg success';
-      msg.textContent = res.message || 'Reset request sent.';
-    }).catch(function (err) {
-      msg.className = 'auth-msg error';
-      msg.textContent = err.message || 'Request failed.';
-    });
-  });
-
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var username = document.getElementById('username').value.trim();

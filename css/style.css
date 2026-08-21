@@ -48,8 +48,8 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); line
 .screen { display: none; min-height: 100vh; }
 .screen:not(.hidden) { display: block; }
 
-/* Auth Pages (login.html, register.html) */
-.auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
+/* Auth Pages (login.html, register.html, forgot-password.html) */
+.auth-page { display: flex; justify-content: center; padding: 3rem 1rem 2rem; flex: 1; }
 .auth-card { max-width: 400px; width: 100%; background: var(--card); border-radius: 12px; padding: 2rem 1.75rem; box-shadow: var(--shadow); }
 .auth-card h1 { font-size: 1.5rem; margin: 0 0 0.25rem; text-align: center; color: var(--primary); }
 .auth-card .auth-sub { text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
