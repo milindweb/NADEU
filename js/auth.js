@@ -62,6 +62,14 @@ const Auth = {
       this.remember = e.target.checked;
       localStorage.setItem(CONFIG.STORAGE_KEYS.REMEMBER, this.remember);
     });
+    document.getElementById('forgotPwd')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.handleForgotPassword();
+    });
+  },
+
+  handleForgotPassword() {
+    this.showToast('Contact NAD Employees Union President or Secretary for password reset', 'error');
   },
   
   async checkSession() {

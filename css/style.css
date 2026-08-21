@@ -56,6 +56,11 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); line
 .login-header p { color: var(--text-muted); font-size: 0.9rem; }
 .login-footer { text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 0.8rem; }
 
+/* Login Form Links */
+.field-links { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.85rem; }
+.forgot-link { color: var(--accent); text-decoration: none; }
+.forgot-link:hover { text-decoration: underline; }
+
 /* App Header - Sticky */
 .app-header { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--primary); color: white; box-shadow: var(--shadow); }
 .header-left { display: flex; align-items: center; gap: 10px; }

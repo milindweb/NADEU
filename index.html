@@ -32,13 +32,19 @@
           <label for="password">Password</label>
           <input type="password" id="password" name="password" autocomplete="current-password" required>
         </div>
-        <label class="checkbox-field">
-          <input type="checkbox" id="rememberMe" name="rememberMe" checked>
-          <span>Remember me (one-click login)</span>
-        </label>
+        <div class="field-links">
+          <label class="checkbox-field">
+            <input type="checkbox" id="rememberMe" name="rememberMe" checked>
+            <span>Remember me (one-click login)</span>
+          </label>
+          <a href="#" id="forgotPwd" class="forgot-link">Forgot password?</a>
+        </div>
         <button type="submit" class="btn-primary btn-block">Sign In</button>
         <div class="error-msg hidden"></div>
       </form>
+      <div class="login-footer">
+        <small>After sign in, contact NAD Employees Union President or Secretary for account approval</small>
+      </div>
       
     </div>
   </div>
