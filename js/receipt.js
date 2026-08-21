@@ -134,7 +134,8 @@ const Receipt = {
         await this.saveEmployeeEdits(data);
       }
       
-      Auth.showToast(this.editMode ? 'Receipt updated' : 'Receipt saved');
+      const receiptNo = data['Receipt No.'] || '';
+      Auth.showToast((this.editMode ? 'Receipt updated' : 'Receipt saved') + (receiptNo ? ' — #' + receiptNo : ''));
       this.clearForm();
       this.loadRecent();
     } catch (err) {
@@ -193,11 +194,14 @@ const Receipt = {
   validateForm() {
     const required = this.form.querySelectorAll('[required]');
     let valid = true;
+    const missing = [];
     
     required.forEach(el => {
       if (!el.value.trim()) {
         el.classList.add('error');
         valid = false;
+        const label = el.closest('.field')?.querySelector('label')?.textContent?.replace(' *', '') || el.name;
+        if (!missing.includes(label)) missing.push(label);
       } else {
         el.classList.remove('error');
       }
@@ -209,6 +213,8 @@ const Receipt = {
       if (!checked) {
         this.form.querySelectorAll('input[name="' + name + '"]').forEach(r => r.classList.add('error'));
         valid = false;
+        const legend = this.form.querySelector('input[name="' + name + '"]')?.closest('fieldset')?.querySelector('legend')?.textContent?.replace(' *', '') || name;
+        if (!missing.includes(legend)) missing.push(legend);
       } else {
         this.form.querySelectorAll('input[name="' + name + '"]').forEach(r => r.classList.remove('error'));
       }
@@ -219,8 +225,13 @@ const Receipt = {
     if (desigInput && !desigInput.value.trim()) {
       desigInput.classList.add('error');
       valid = false;
+      if (!missing.includes('Designation')) missing.push('Designation');
     } else if (desigInput) {
       desigInput.classList.remove('error');
+    }
+    
+    if (!valid) {
+      Auth.showToast('Please fill: ' + missing.join(', '), 'error');
     }
     
     return valid;
