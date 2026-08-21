@@ -92,8 +92,15 @@ const Employee = {
     });
     
     // Update radio buttons
-    this.setRadioValue(form, 'designation', emp['Rank'] || emp['Post'] || '');
+    const rank = emp['Rank'] || '';
+    const post = emp['Post'] || '';
+    const fullDesignation = [post, rank].filter(Boolean).join(' ');
+    this.setRadioValue(form, 'designation', rank || post || '');
     this.setRadioValue(form, 'location', emp['Location'] || '');
+    
+    // Set designation text input to full designation (Post + Rank)
+    const desigInput = form.querySelector('#designationInput');
+    if (desigInput && fullDesignation) desigInput.value = fullDesignation;
     
     // Save to localStorage for reuse
     FormPersist.save(form);
