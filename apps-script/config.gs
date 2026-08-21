@@ -90,9 +90,18 @@ function nowIST_() {
 
 function json_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON);
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeaders({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    });
 }
 
 function fail_(msg, code) {
   return json_({ ok: false, error: msg, code: code || 400 });
+}
+
+function log_(msg) {
+  Logger.log(msg);
 }

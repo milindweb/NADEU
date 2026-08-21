@@ -3,24 +3,37 @@
  */
 
 const API = {
-  async call(fn, args = {}, token = null) {
+  async call(fn, args = {}, token = null, data = null) {
     const body = { fn, args };
     if (token) body.token = token;
-    
-    const res = await fetch(CONFIG.API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    
-    const data = await res.json();
-    if (!data.ok) {
-      const err = new Error(data.error || 'API Error');
-      err.code = data.code;
-      err.data = data;
+    if (data && typeof data === 'object') Object.assign(body, data);
+
+    let res;
+    try {
+      res = await fetch(CONFIG.API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+    } catch (err) {
+      if (err.name === 'TypeError' && /failed to fetch|network|cors/i.test(err.message)) {
+        throw new Error('Unable to reach the server. Please check your connection or try again later.');
+      }
       throw err;
     }
-    return data.data;
+
+    if (!res.ok) {
+      throw new Error('Server error (' + res.status + '). Please try again.');
+    }
+
+    const json = await res.json();
+    if (!json.ok) {
+      const err = new Error(json.error || 'API Error');
+      err.code = json.code;
+      err.data = json;
+      throw err;
+    }
+    return json.data;
   },
   
   // Auth
@@ -46,6 +59,10 @@ logout(token) {
 
   forgotPassword(identifier) {
     return this.call('forgotPassword', {}, null, { identifier });
+  },
+
+  changePassword(token, currentPassword, newPassword, confirmPassword) {
+    return this.call('changePassword', {}, token, { currentPassword, newPassword, confirmPassword });
   },
 
   // Employee
@@ -80,6 +97,10 @@ logout(token) {
   
   getReceipts(token) {
     return this.call('getReceipts', [], token);
+  },
+
+  getReceipt(id, token) {
+    return this.call('getReceipt', [id], token);
   },
   
   getRecentReceipts(limit, token) {

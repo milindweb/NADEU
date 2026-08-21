@@ -128,18 +128,27 @@ function routeProtected(fn, args, body, user) {
 }
 
 function doGet(e) {
+  var headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type'
+  };
+
   var params = e.parameter || {};
   var fn = params.fn || '';
-  
+
   if (fn === 'setupAll') {
     authSetupSheets();
     employeeSetupSheets();
     receiptSetupSheets();
-    return ContentService.createTextOutput('Setup complete').setMimeType(ContentService.MimeType.TEXT);
+    return ContentService.createTextOutput('Setup complete')
+      .setMimeType(ContentService.MimeType.TEXT)
+      .setHeaders(headers);
   }
-  
+
   return ContentService.createTextOutput('NAD Employees Union API - POST only')
-    .setMimeType(ContentService.MimeType.TEXT);
+    .setMimeType(ContentService.MimeType.TEXT)
+    .setHeaders(headers);
 }
 
 function doOptions(e) {
