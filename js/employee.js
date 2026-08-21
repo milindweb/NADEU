@@ -76,7 +76,6 @@ const Employee = {
       'empName': ['Name'],
       'empToken': ['Tokan No.', 'Token No.'],
       'empMobile': ['Mobile No.'],
-      'designation': ['Rank', 'Post'],
       'location': ['Location']
     };
     
