@@ -21,16 +21,21 @@ const SiteHeader = {
         '<div class="header-inner">' +
           '<a href="index.html" class="header-logo">' +
             '<img src="img/logo-192.png" alt="NAD Employees Union" width="36" height="36">' +
-            '<span class="header-title">NAD Employees Union</span>' +
+            '<div class="header-title-wrap">' +
+              '<span class="header-title">NAD Employees Union</span>' +
+              '<span class="header-subtitle">Regd by Ministry of Defence, Govt. of India</span>' +
+            '</div>' +
           '</a>' +
+          '<nav class="header-nav">' +
+            '<a href="index.html">Home</a>' +
+            '<a href="about.html">About</a>' +
+          '</nav>' +
           '<div class="header-actions">' +
             (isLoggedIn
               ? '<a href="index.html" class="header-btn">App</a>'
               : '<a href="login.html" class="header-btn">Login</a>') +
           '</div>' +
         '</div>' +
-        '<div class="header-tagline">Unity · Solidarity · Strength</div>' +
-        '<div class="header-registration">Regd by Ministry of Defence, Govt. of India</div>' +
       '</header>';
   },
 
