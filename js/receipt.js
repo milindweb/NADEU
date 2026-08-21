@@ -89,7 +89,7 @@ const Receipt = {
       <div class="search-result" data-token="${emp['Tokan No.'] || emp['Token No.'] || ''}">
         <strong>${emp['Name'] || ''}</strong>
         <span class="meta">Token: ${emp['Tokan No.'] || emp['Token No.'] || ''}</span>
-        <span class="meta">${emp['Location'] || ''} • ${emp['Post'] || ''} ${emp['Rank'] || ''}</span>
+        <span class="meta">${emp['Location'] || ''} • ${emp['Rank'] || emp['Post'] || ''}</span>
       </div>
     `).join('');
     
@@ -157,14 +157,10 @@ const Receipt = {
     const mobileChanged = formData['Mobile No.'] && formData['Mobile No.'] !== (emp['Mobile No.'] || '');
     if (mobileChanged) updates['Mobile No.'] = formData['Mobile No.'];
 
-    const post = emp['Post'] || '';
-    if (formData.post && formData.post.toLowerCase() !== post.toLowerCase()) {
-      updates['Post'] = formData.post;
-    }
-
-    const rank = emp['Rank'] || '';
-    if (formData.rank && formData.rank.toLowerCase() !== rank.toLowerCase()) {
-      updates['Rank'] = formData.rank;
+    const rank = emp['Rank'] || emp['Post'] || '';
+    if (formData.Designation && formData.Designation.toLowerCase() !== rank.toLowerCase()) {
+      updates['Rank'] = formData.Designation;
+      updates['Post'] = formData.Designation;
     }
 
     if (formData.location && formData.location.toLowerCase() !== (emp['Location'] || '').toLowerCase()) {
@@ -203,7 +199,7 @@ const Receipt = {
     });
     
     // Radio groups
-    ['post', 'rank', 'location', 'status'].forEach(name => {
+    ['designation', 'location', 'status'].forEach(name => {
       const checked = this.form.querySelector('input[name="' + name + '"]:checked');
       if (!checked) {
         this.form.querySelectorAll('input[name="' + name + '"]').forEach(r => r.classList.add('error'));
@@ -232,7 +228,7 @@ const Receipt = {
     };
     
     // Get radio values
-    ['post', 'rank', 'location', 'status'].forEach(name => {
+    ['designation', 'location', 'status'].forEach(name => {
       const checked = this.form.querySelector('input[name="' + name + '"]:checked');
       if (checked) {
         data[name] = checked.value === 'other' 
@@ -241,8 +237,7 @@ const Receipt = {
       }
     });
     
-    // Combine Post + Rank into Designation for receipt
-    data.Designation = [data.post, data.rank].filter(Boolean).join(' ');
+    data.Designation = data.designation || '';
     
     if (this.editMode && this.editId) data.ID = this.editId;
     return data;
@@ -393,20 +388,8 @@ const Receipt = {
       if (el) el.value = r[key] || '';
     });
     
-    // Radio values - split Designation into Post and Rank
-    const designation = r['Designation'] || '';
-    const ranks = ['HSK-II', 'HSK1', 'SK', 'MCM', 'UDC', 'LDC'];
-    let postVal = designation;
-    let rankVal = '';
-    for (const rk of ranks) {
-      if (designation.toLowerCase().endsWith(rk.toLowerCase())) {
-        rankVal = designation.slice(designation.length - rk.length);
-        postVal = designation.slice(0, designation.length - rk.length).trim();
-        break;
-      }
-    }
-    this.setRadioValue('post', postVal);
-    this.setRadioValue('rank', rankVal);
+    // Radio values
+    this.setRadioValue('designation', r['Designation'] || '');
     this.setRadioValue('location', r['Location'] || '');
     this.setRadioValue('status', r['Status'] || 'Paid');
     
@@ -440,7 +423,7 @@ const FormPersist = {
     const data = {};
     new FormData(form).forEach((v, k) => data[k] = v);
     // Radio values
-    ['post', 'rank', 'location', 'status'].forEach(name => {
+    ['designation', 'location', 'status'].forEach(name => {
       const checked = form.querySelector('input[name="' + name + '"]:checked');
       if (checked) data[name] = checked.value === 'other' 
         ? form.querySelector('[data-other-for="' + name + '"]')?.value || ''
