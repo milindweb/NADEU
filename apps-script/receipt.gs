@@ -103,7 +103,8 @@ function receiptList() {
   return result;
 }
 
-function receiptGet(id) {
+function receiptGet(body) {
+  var id = body.id || body.args && body.args[0];
   var all = receiptList();
   for (var i = 0; i < all.length; i++) {
     if (String(all[i].ID) === String(id)) return all[i];
@@ -111,7 +112,8 @@ function receiptGet(id) {
   return null;
 }
 
-function receiptDelete(id) {
+function receiptDelete(body) {
+  var id = body.id || body.args && body.args[0];
   var sheet = receiptSheet_();
   var values = sheet.getDataRange().getValues();
   for (var i = 1; i < values.length; i++) {
@@ -123,8 +125,8 @@ function receiptDelete(id) {
   return { success: false };
 }
 
-function getRecentReceipts(limit) {
-  limit = limit || 10;
+function getRecentReceipts(body) {
+  var limit = (body.limit || body.args && body.args[0]) || 10;
   var all = receiptList();
   all.sort(function(a, b) {
     return new Date(b['Created At'] || 0) - new Date(a['Created At'] || 0);
@@ -132,11 +134,13 @@ function getRecentReceipts(limit) {
   return all.slice(0, limit);
 }
 
-function getReceiptsPaginated(page, pageSize, sortBy, sortDir, filters) {
-  page = page || 1;
-  pageSize = pageSize || 10;
-  sortBy = sortBy || 'Created At';
-  sortDir = sortDir || 'desc';
+function getReceiptsPaginated(body) {
+  var args = body.args || [];
+  var page = args[0] || 1;
+  var pageSize = args[1] || 10;
+  var sortBy = args[2] || 'Created At';
+  var sortDir = args[3] || 'desc';
+  var filters = args[4] || {};
   
   var all = receiptList();
   
