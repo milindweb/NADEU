@@ -13,7 +13,8 @@ const Employee = {
     const cachedTime = parseInt(localStorage.getItem(CONFIG.STORAGE_KEYS.EMPLOYEES_CACHE_TIME) || '0');
     
     if (!force && cached && (now - cachedTime) < CONFIG.CACHE_TTL) {
-      this.cache = JSON.parse(cached);
+      var parsed = JSON.parse(cached);
+      this.cache = Array.isArray(parsed) ? parsed : [];
       this.cacheTime = cachedTime;
       document.dispatchEvent(new CustomEvent('employees:loaded', { detail: this.cache }));
       return this.cache;
@@ -23,7 +24,8 @@ const Employee = {
     
     try {
       const res = await API.getEmployees(Auth.token);
-      this.cache = res.data || [];
+      var data = res.data;
+      this.cache = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);
       this.cacheTime = now;
       localStorage.setItem(CONFIG.STORAGE_KEYS.EMPLOYEES_CACHE, JSON.stringify(this.cache));
       localStorage.setItem(CONFIG.STORAGE_KEYS.EMPLOYEES_CACHE_TIME, this.cacheTime.toString());
@@ -32,7 +34,8 @@ const Employee = {
     } catch (err) {
       console.error('Failed to load employees:', err);
       if (cached) {
-        this.cache = JSON.parse(cached);
+        var parsed = JSON.parse(cached);
+        this.cache = Array.isArray(parsed) ? parsed : [];
         return this.cache;
       }
       return [];
