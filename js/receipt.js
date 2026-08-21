@@ -197,37 +197,43 @@ const Receipt = {
     const missing = [];
     
     required.forEach(el => {
+      el.classList.remove('error', 'valid');
       if (!el.value.trim()) {
         el.classList.add('error');
         valid = false;
         const label = el.closest('.field')?.querySelector('label')?.textContent?.replace(' *', '') || el.name;
         if (!missing.includes(label)) missing.push(label);
       } else {
-        el.classList.remove('error');
+        el.classList.add('valid');
       }
     });
     
     // Radio groups
     ['location', 'status'].forEach(name => {
       const checked = this.form.querySelector('input[name="' + name + '"]:checked');
+      const radios = this.form.querySelectorAll('input[name="' + name + '"]');
+      radios.forEach(r => r.classList.remove('error', 'valid'));
       if (!checked) {
-        this.form.querySelectorAll('input[name="' + name + '"]').forEach(r => r.classList.add('error'));
+        radios.forEach(r => r.classList.add('error'));
         valid = false;
         const legend = this.form.querySelector('input[name="' + name + '"]')?.closest('fieldset')?.querySelector('legend')?.textContent?.replace(' *', '') || name;
         if (!missing.includes(legend)) missing.push(legend);
       } else {
-        this.form.querySelectorAll('input[name="' + name + '"]').forEach(r => r.classList.remove('error'));
+        radios.forEach(r => { if (r.checked) r.classList.add('valid'); });
       }
     });
     
     // Designation text input
     const desigInput = document.getElementById('designationInput');
-    if (desigInput && !desigInput.value.trim()) {
-      desigInput.classList.add('error');
-      valid = false;
-      if (!missing.includes('Designation')) missing.push('Designation');
-    } else if (desigInput) {
-      desigInput.classList.remove('error');
+    if (desigInput) {
+      desigInput.classList.remove('error', 'valid');
+      if (!desigInput.value.trim()) {
+        desigInput.classList.add('error');
+        valid = false;
+        if (!missing.includes('Designation')) missing.push('Designation');
+      } else {
+        desigInput.classList.add('valid');
+      }
     }
     
     if (!valid) {
