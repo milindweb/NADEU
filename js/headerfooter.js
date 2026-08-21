@@ -26,10 +26,6 @@ const SiteHeader = {
               '<span class="header-subtitle">Regd by Ministry of Defence, Govt. of India</span>' +
             '</div>' +
           '</a>' +
-          '<nav class="header-nav">' +
-            '<a href="index.html">Home</a>' +
-            '<a href="about.html">About</a>' +
-          '</nav>' +
           '<div class="header-actions">' +
             (isLoggedIn
               ? '<a href="index.html" class="header-btn">App</a>'
