@@ -340,8 +340,15 @@ const Receipt = {
       );
       
       const result = res.data;
+      console.log('[NADEU] loadRecent raw response:', JSON.stringify(res).substring(0, 500));
+      console.log('[NADEU] loadRecent result:', result);
       const receipts = Array.isArray(result) ? result : (Array.isArray(result?.data) ? result.data : []);
       const pag = result?.pagination || { page: 1, pageSize: 10, total: 0, totalPages: 0 };
+      console.log('[NADEU] loadRecent parsed receipts:', receipts.length, 'rows');
+      if (receipts.length > 0) {
+        console.log('[NADEU] loadRecent first row keys:', Object.keys(receipts[0]));
+        console.log('[NADEU] loadRecent first row:', receipts[0]);
+      }
       this.renderRecentTable(receipts, pag);
     } catch (err) {
       console.error('Failed to load recent:', err);
