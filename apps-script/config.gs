@@ -90,12 +90,7 @@ function nowIST_() {
 
 function json_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeaders({
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
-    });
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 function fail_(msg, code) {

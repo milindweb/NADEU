@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="/js/config.js"></script>
+  <script>const PAGE_CONFIG = { title: 'About Us', description: 'Learn about NAD Employees Union — Receipt Management System for union members.', canonical: '/about' };</script>
+  <script src="/js/seo-injector.js"></script>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/fonts/fontawesome/css/all.min.css" />
+  <script src="/js/headerfooter.js" defer></script>
+  <style>
+    main { max-width: 900px; margin: 0 auto; padding: 3rem 1rem; }
+    h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    h2 { font-size: 1.5rem; margin: 2rem 0 1rem; color: var(--accent); }
+    p { line-height: 1.8; color: var(--text-secondary); margin-bottom: 1rem; }
+    .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+    .team-card { background: var(--card-bg); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+    .team-card h3 { margin: 0 0 0.25rem; color: var(--accent); }
+    .team-card .role { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; margin-bottom: 0.75rem; }
+    .team-card p { font-size: 0.95rem; margin: 0; }
+  </style>
+</head>
+<body>
+  <div id="header"></div>
+  <main>
+    <h1>About NAD Employees Union</h1>
+    <p>NAD Employees Union Receipt Management System helps union members manage and track receipts efficiently. Our digital platform simplifies receipt entry, employee search, and record keeping.</p>
+
+    <h2>Our Mission</h2>
+    <p>To provide NAD Employees Union members with a simple, reliable digital platform for receipt management and record keeping — making union administration transparent and efficient.</p>
+
+    <h2>Our Team</h2>
+    <div class="team-grid">
+      <div class="team-card">
+        <h3>NAD Employees Union</h3>
+        <div class="role">Administration</div>
+        <p>Managing union receipts, employee records, and member communications through a modern digital platform built for efficiency and transparency.</p>
+      </div>
+    </div>
+  </main>
+
+  <div id="form-container"></div>
+  <script>
+    fetch("/components/contactform.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("form-container").innerHTML = html;
+        const script = document.createElement("script");
+        script.src = "/js/contact-form.js";
+        document.body.appendChild(script);
+      });
+  </script>
+
+  <div id="footer"></div>
+</body>
+</html>

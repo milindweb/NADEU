@@ -33,7 +33,7 @@ const API = {
       err.data = json;
       throw err;
     }
-    return json.data;
+    return json;
   },
   
   // Auth

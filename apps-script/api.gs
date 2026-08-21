@@ -5,7 +5,10 @@
 
 function doPost(e) {
   try {
-    var body = e.postData ? JSON.parse(e.postData.contents) : {};
+    if (!e || !e.postData || !e.postData.contents) {
+      return fail_('No request data');
+    }
+    var body = JSON.parse(e.postData.contents);
     var fn = String(body.fn || '');
     var args = body.args || [];
     var token = body.token || '';
@@ -128,12 +131,6 @@ function routeProtected(fn, args, body, user) {
 }
 
 function doGet(e) {
-  var headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type'
-  };
-
   var params = e.parameter || {};
   var fn = params.fn || '';
 
@@ -142,23 +139,16 @@ function doGet(e) {
     employeeSetupSheets();
     receiptSetupSheets();
     return ContentService.createTextOutput('Setup complete')
-      .setMimeType(ContentService.MimeType.TEXT)
-      .setHeaders(headers);
+      .setMimeType(ContentService.MimeType.TEXT);
   }
 
   return ContentService.createTextOutput('NAD Employees Union API - POST only')
-    .setMimeType(ContentService.MimeType.TEXT)
-    .setHeaders(headers);
+    .setMimeType(ContentService.MimeType.TEXT);
 }
 
 function doOptions(e) {
   return ContentService.createTextOutput('')
-    .setMimeType(ContentService.MimeType.TEXT)
-    .setHeaders({
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
-    });
+    .setMimeType(ContentService.MimeType.TEXT);
 }
 
 // ===== Include other modules =====
