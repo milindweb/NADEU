@@ -253,6 +253,7 @@ const Receipt = {
       'Employee Name': raw.empName || '',
       'Token No.': raw.empToken || '',
       'Mobile No.': raw.empMobile || '',
+      'Section': raw.section || '',
       'Amount': raw.amount || '',
       'Receipt No.': raw.receiptNo || '',
       'Remark': raw.remark || ''

@@ -5,7 +5,7 @@
 // ---------- Schema ----------
 var RECEIPT_HEADERS = [
   'ID','Date','Token No.','Employee Name','Designation','Mobile No.',
-  'Location','Amount','Status','Receipt No.','Remark','Created By','Created At'
+  'Section','Location','Amount','Status','Receipt No.','Remark','Created By','Created At'
 ];
 
 // ---------- Sheet Helpers ----------
@@ -51,6 +51,7 @@ function receiptSave(data) {
     'Employee Name': name,
     'Designation': data['Designation'] || '',
     'Mobile No.': data['Mobile No.'] || '',
+    'Section': data['Section'] || '',
     'Location': data['Location'] || '',
     'Amount': Number(data['Amount']) || 0,
     'Status': data['Status'] || 'Paid',
