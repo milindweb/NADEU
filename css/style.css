@@ -48,23 +48,44 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); line
 .screen { display: none; min-height: 100vh; }
 .screen:not(.hidden) { display: block; }
 
-/* Login Screen */
-.login-box { max-width: 360px; margin: 40px auto; padding: 28px 24px; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); }
-.login-header { text-align: center; margin-bottom: 24px; }
-.login-header .logo { width: 64px; height: 64px; margin-bottom: 12px; color: var(--primary); }
-.login-header h1 { font-size: 1.5rem; color: var(--primary); margin-bottom: 4px; }
-.login-header p { color: var(--text-muted); font-size: 0.9rem; }
-.login-footer { text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 0.8rem; }
-
-/* Auth Form Switch */
-.auth-switch { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 16px; font-size: 0.85rem; color: var(--text-muted); }
-.auth-switch a { color: var(--accent); text-decoration: none; font-weight: 500; }
-.auth-switch a:hover { text-decoration: underline; }
-
-/* Login Form Links */
-.field-links { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.85rem; }
-.forgot-link { color: var(--accent); text-decoration: none; }
-.forgot-link:hover { text-decoration: underline; }
+/* Auth Pages (login.html, register.html) */
+.auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
+.auth-card { max-width: 400px; width: 100%; background: var(--card); border-radius: 12px; padding: 2rem 1.75rem; box-shadow: var(--shadow); }
+.auth-card h1 { font-size: 1.5rem; margin: 0 0 0.25rem; text-align: center; color: var(--primary); }
+.auth-card .auth-sub { text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+.auth-field { margin-bottom: 1rem; }
+.auth-field label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; color: var(--text); }
+.auth-field input {
+  width: 100%; padding: 0.65rem 0.8rem; font-size: 0.95rem;
+  border: 2px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--card); color: var(--text); transition: border-color 0.15s, box-shadow 0.15s;
+}
+.auth-field input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(52,152,219,0.2); }
+.auth-field-check { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
+.auth-field-check input { width: auto; }
+.auth-field-check label { margin: 0; font-size: 0.85rem; font-weight: 400; text-transform: none; letter-spacing: 0; }
+.auth-btn {
+  width: 100%; padding: 0.7rem; font-size: 1rem; font-weight: 600; color: #fff;
+  background: var(--primary); border: none; border-radius: var(--radius-sm); cursor: pointer;
+  transition: background 0.15s;
+}
+.auth-btn:hover { background: var(--primary-dark); }
+.auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.auth-msg { margin-top: 1rem; font-size: 0.9rem; text-align: center; }
+.auth-msg.success { color: var(--success); }
+.auth-msg.error { color: var(--danger); }
+.auth-link { text-align: center; margin-top: 1.25rem; font-size: 0.9rem; color: var(--text-muted); }
+.auth-link a { color: var(--accent); text-decoration: none; font-weight: 600; }
+.auth-link a:hover { text-decoration: underline; }
+.auth-pw-wrap { position: relative; }
+.auth-pw-wrap .pw-toggle {
+  position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; padding: 4px;
+}
+.auth-forgot { text-align: right; margin-bottom: 1rem; font-size: 0.85rem; }
+.auth-forgot a { color: var(--accent); text-decoration: none; }
+.auth-forgot a:hover { text-decoration: underline; }
+.auth-footer { text-align: center; margin-top: 1.5rem; color: var(--text-muted); font-size: 0.8rem; }
 
 /* App Header - Sticky */
 .app-header { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--primary); color: white; box-shadow: var(--shadow); }

@@ -15,84 +15,19 @@
   <meta name="msapplication-TileImage" content="img/logo-144.png">
 </head>
 <body>
-  <!-- Login Screen -->
-  <div id="loginScreen" class="screen">
-    <div class="login-box">
-      <div class="login-header">
-        <img class="logo" src="img/logo.jpg" alt="NAD Employees Union" width="64" height="64">
-        <h1>NAD Employees Union</h1>
-        <p>Receipt Management System</p>
-      </div>
-      
-      <!-- Login Form -->
-      <form id="loginForm" novalidate>
-        <div class="field">
-          <label for="username">Username</label>
-          <input type="text" id="username" name="username" autocomplete="username" required autofocus>
-        </div>
-        <div class="field">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" autocomplete="current-password" required>
-        </div>
-        <div class="field-links">
-          <label class="checkbox-field">
-            <input type="checkbox" id="rememberMe" name="rememberMe" checked>
-            <span>Remember me (one-click login)</span>
-          </label>
-          <a href="#" id="forgotPwd" class="forgot-link">Forgot password?</a>
-        </div>
-        <button type="submit" class="btn-primary btn-block">Sign In</button>
-        <div class="error-msg hidden"></div>
-      </form>
-      
-      <div class="auth-switch">
-        <span>Don't have an account?</span>
-        <a href="#" id="switchToRegister">Register</a>
-      </div>
-      
-      <div class="login-footer">
-        <small>After sign in, contact NAD Employees Union President or Secretary for account approval</small>
-      </div>
-      
-      <!-- Register Form (hidden by default) -->
-      <form id="registerForm" class="hidden" novalidate>
-        <div class="field">
-          <label for="regUsername">Username</label>
-          <input type="text" id="regUsername" name="username" autocomplete="username" minlength="3" required>
-        </div>
-        <div class="field">
-          <label for="regName">Name</label>
-          <input type="text" id="regName" name="name" autocomplete="name" required>
-        </div>
-        <div class="field">
-          <label for="regEmail">Email</label>
-          <input type="email" id="regEmail" name="email" autocomplete="email" required>
-        </div>
-        <div class="field">
-          <label for="regMobile">Mobile No.</label>
-          <input type="tel" id="regMobile" name="mobile" autocomplete="tel" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" required>
-        </div>
-        <div class="field">
-          <label for="regPassword">Password</label>
-          <input type="password" id="regPassword" name="password" autocomplete="new-password" minlength="4" required>
-        </div>
-        <div class="field">
-          <label for="regConfirm">Confirm Password</label>
-          <input type="password" id="regConfirm" name="confirm" autocomplete="new-password" minlength="4" required>
-        </div>
-        <button type="submit" class="btn-primary btn-block">Register</button>
-        <div class="error-msg hidden"></div>
-      </form>
-      
-      <div id="registerSwitch" class="auth-switch hidden">
-        <span>Already have an account?</span>
-        <a href="#" id="switchToLogin">Sign In</a>
-      </div>
-    </div>
-  </div>
+  <!-- Auth guard: redirect to login if no token -->
+  <script>
+    (function() {
+      var token = localStorage.getItem('nadeu_token');
+      var remember = localStorage.getItem('nadeu_remember') === 'true';
+      if (!token && !remember) {
+        window.location.href = 'login.html';
+      }
+    })();
+  </script>
 
   <!-- Main App -->
-  <div id="app" class="screen hidden">
+  <div id="app" class="screen">
     <!-- Sticky Header -->
     <header class="app-header">
       <div class="header-left">
@@ -101,9 +36,9 @@
       </div>
       <div class="header-right">
         <span id="currentUser" class="user-badge"></span>
-        <button id="changePwdBtn" class="icon-btn" title="Change Password" aria-label="Change password">🔑</button>
-        <button id="themeToggle" class="icon-btn" title="Toggle theme" aria-label="Toggle dark mode">🌙</button>
-        <button id="logoutBtn" class="icon-btn" title="Logout">⏻</button>
+        <button id="changePwdBtn" class="icon-btn" title="Change Password" aria-label="Change password">&#128273;</button>
+        <button id="themeToggle" class="icon-btn" title="Toggle theme" aria-label="Toggle dark mode">&#127769;</button>
+        <button id="logoutBtn" class="icon-btn" title="Logout">&#9211;</button>
       </div>
     </header>
 
@@ -113,7 +48,7 @@
         <div class="search-box">
           <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
           <input type="search" id="empSearch" name="empSearch" placeholder="Search: Token, Name, Mobile, Location, Rank, Post..." autocomplete="off">
-          <button id="clearSearch" class="icon-btn hidden" title="Clear">✕</button>
+          <button id="clearSearch" class="icon-btn hidden" title="Clear">&#10005;</button>
         </div>
         <div id="searchResults" class="dropdown hidden"></div>
       </section>
@@ -169,7 +104,7 @@
 
         <div class="form-row">
           <div class="field">
-            <label>Amount (₹) <span class="req">*</span></label>
+            <label>Amount (&#8377;) <span class="req">*</span></label>
             <input type="number" name="amount" value="200" min="0" step="1" required>
           </div>
           <div class="field">
@@ -205,7 +140,7 @@
               <option value="20">20 per page</option>
               <option value="30">30 per page</option>
             </select>
-            <button id="toggleRecent" class="icon-btn" title="Collapse/Expand">▼</button>
+            <button id="toggleRecent" class="icon-btn" title="Collapse/Expand">&#9660;</button>
           </div>
         </div>
         <div id="recentList">
