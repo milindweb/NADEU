@@ -110,13 +110,10 @@ const Employee = {
         matched = true;
       }
     });
-    // Handle "Other" option
-    const otherRadio = form.querySelector('input[name="' + name + '"][value="other"]');
-    const otherInput = form.querySelector('[data-other-for="' + name + '"]');
-    if (!matched && otherRadio && otherInput) {
-      otherRadio.checked = true;
-      otherInput.value = value;
-      otherInput.classList.remove('hidden');
+    // For designation, also set the text input
+    if (name === 'designation') {
+      const input = form.querySelector('#designationInput');
+      if (input) input.value = value;
     }
   }
 };

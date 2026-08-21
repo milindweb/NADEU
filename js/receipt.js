@@ -52,13 +52,18 @@ const Receipt = {
       }
     });
     
-    // Radio "Other" handling
-    this.form.querySelectorAll('input[type="radio"][value="other"]').forEach(radio => {
+    // Designation radio → input sync
+    const desigInput = document.getElementById('designationInput');
+    this.form.querySelectorAll('input[name="designation"]').forEach(radio => {
       radio.addEventListener('change', (e) => {
-        const otherInput = document.querySelector('[data-other-for="' + e.target.name + '"]');
-        if (otherInput) otherInput.classList.toggle('hidden', !e.target.checked);
+        if (desigInput) desigInput.value = e.target.value;
       });
     });
+    if (desigInput) {
+      desigInput.addEventListener('input', () => {
+        this.form.querySelectorAll('input[name="designation"]').forEach(r => r.checked = false);
+      });
+    }
     
     // Recent entries toggle
     document.getElementById('toggleRecent')?.addEventListener('click', (e) => {
@@ -199,7 +204,7 @@ const Receipt = {
     });
     
     // Radio groups
-    ['designation', 'location', 'status'].forEach(name => {
+    ['location', 'status'].forEach(name => {
       const checked = this.form.querySelector('input[name="' + name + '"]:checked');
       if (!checked) {
         this.form.querySelectorAll('input[name="' + name + '"]').forEach(r => r.classList.add('error'));
@@ -208,6 +213,15 @@ const Receipt = {
         this.form.querySelectorAll('input[name="' + name + '"]').forEach(r => r.classList.remove('error'));
       }
     });
+    
+    // Designation text input
+    const desigInput = document.getElementById('designationInput');
+    if (desigInput && !desigInput.value.trim()) {
+      desigInput.classList.add('error');
+      valid = false;
+    } else if (desigInput) {
+      desigInput.classList.remove('error');
+    }
     
     return valid;
   },
@@ -227,17 +241,14 @@ const Receipt = {
       'Remark': raw.remark || ''
     };
     
-    // Get radio values
-    ['designation', 'location', 'status'].forEach(name => {
+    // Get radio values (skip designation — uses text input)
+    ['location', 'status'].forEach(name => {
       const checked = this.form.querySelector('input[name="' + name + '"]:checked');
-      if (checked) {
-        data[name] = checked.value === 'other' 
-          ? this.form.querySelector('[data-other-for="' + name + '"]')?.value || ''
-          : checked.value;
-      }
+      if (checked) data[name] = checked.value;
     });
     
-    data.Designation = data.designation || '';
+    // Designation from text input (radio clicks populate it)
+    data.Designation = document.getElementById('designationInput')?.value?.trim() || '';
     
     if (this.editMode && this.editId) data.ID = this.editId;
     return data;
@@ -407,12 +418,10 @@ const Receipt = {
       r.checked = r.value.toLowerCase() === value.toLowerCase();
       if (r.checked) matched = true;
     });
-    const otherRadio = this.form.querySelector('input[name="' + name + '"][value="other"]');
-    const otherInput = this.form.querySelector('[data-other-for="' + name + '"]');
-    if (!matched && otherRadio && otherInput) {
-      otherRadio.checked = true;
-      otherInput.value = value;
-      otherInput.classList.remove('hidden');
+    // For designation, also set the text input
+    if (name === 'designation') {
+      const input = document.getElementById('designationInput');
+      if (input) input.value = value;
     }
   }
 };
@@ -423,12 +432,13 @@ const FormPersist = {
     const data = {};
     new FormData(form).forEach((v, k) => data[k] = v);
     // Radio values
-    ['designation', 'location', 'status'].forEach(name => {
+    ['location', 'status'].forEach(name => {
       const checked = form.querySelector('input[name="' + name + '"]:checked');
-      if (checked) data[name] = checked.value === 'other' 
-        ? form.querySelector('[data-other-for="' + name + '"]')?.value || ''
-        : checked.value;
+      if (checked) data[name] = checked.value;
     });
+    // Designation from text input
+    const desigInput = form.querySelector('#designationInput');
+    if (desigInput) data.designation = desigInput.value;
     localStorage.setItem(CONFIG.STORAGE_KEYS.FORM_DATA, JSON.stringify(data));
   },
   
@@ -438,20 +448,19 @@ const FormPersist = {
       const el = form.querySelector('[name="' + k + '"]');
       if (el && el.type !== 'radio') el.value = v;
     });
+    // Restore designation input
+    if (data.designation) {
+      const input = form.querySelector('#designationInput');
+      if (input) input.value = data.designation;
+      // Also check matching radio if exists
+      const radio = form.querySelector('input[name="designation"][value="' + data.designation + '"]');
+      if (radio) radio.checked = true;
+    }
     // Restore radios
-    ['post', 'rank', 'location', 'status'].forEach(name => {
+    ['location', 'status'].forEach(name => {
       if (data[name]) {
         const radio = form.querySelector('input[name="' + name + '"][value="' + data[name] + '"]');
         if (radio) radio.checked = true;
-        else {
-          const otherRadio = form.querySelector('input[name="' + name + '"][value="other"]');
-          const otherInput = form.querySelector('[data-other-for="' + name + '"]');
-          if (otherRadio && otherInput) {
-            otherRadio.checked = true;
-            otherInput.value = data[name];
-            otherInput.classList.remove('hidden');
-          }
-        }
       }
     });
   },
