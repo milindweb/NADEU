@@ -8,6 +8,7 @@ const Receipt = {
   pagination: { page: 1, pageSize: 10, sortBy: 'Created At', sortDir: 'desc', filters: {} },
   editMode: false,
   editId: null,
+  selectedEmployee: null,
   
   init() {
     this.form = document.getElementById('receiptForm');
@@ -15,6 +16,7 @@ const Receipt = {
     this.bindEvents();
     this.loadRecent();
     FormPersist.restore(this.form);
+    Employee.load();
     
     // Set default amount
     const amountEl = this.form.querySelector('[name="amount"]');
@@ -87,7 +89,7 @@ const Receipt = {
       <div class="search-result" data-token="${emp['Tokan No.'] || emp['Token No.'] || ''}">
         <strong>${emp['Name'] || ''}</strong>
         <span class="meta">Token: ${emp['Tokan No.'] || emp['Token No.'] || ''}</span>
-        <span class="meta">${emp['Location'] || ''} • ${emp['Rank'] || emp['Post'] || ''}</span>
+        <span class="meta">${emp['Location'] || ''} • ${emp['Post'] || ''} ${emp['Rank'] || ''}</span>
       </div>
     `).join('');
     
@@ -96,6 +98,7 @@ const Receipt = {
         const token = el.dataset.token;
         const emp = Employee.getByToken(token);
         if (emp) {
+          this.selectedEmployee = { ...emp };
           Employee.populateForm(emp, this.form);
           searchEl.value = emp['Name'] + ' (' + token + ')';
           container.classList.add('hidden');
@@ -122,6 +125,10 @@ const Receipt = {
       const data = this.collectFormData();
       const res = await API.saveReceipt(data, Auth.token);
       
+      if (this.selectedEmployee) {
+        await this.saveEmployeeEdits(data);
+      }
+      
       Auth.showToast(this.editMode ? 'Receipt updated' : 'Receipt saved');
       this.clearForm();
       this.loadRecent();
@@ -130,6 +137,55 @@ const Receipt = {
     } finally {
       btn.disabled = false;
       btn.textContent = originalText;
+    }
+  },
+  
+  async saveEmployeeEdits(formData) {
+    const emp = this.selectedEmployee;
+    if (!emp) return;
+
+    const tokenKey = emp['Tokan No.'] ? 'Tokan No.' : 'Token No.';
+    const token = emp[tokenKey];
+    if (!token) return;
+
+    const updates = {};
+    updates[tokenKey] = token;
+
+    const nameChanged = formData['Employee Name'] && formData['Employee Name'] !== (emp['Name'] || '');
+    if (nameChanged) updates['Name'] = formData['Employee Name'];
+
+    const mobileChanged = formData['Mobile No.'] && formData['Mobile No.'] !== (emp['Mobile No.'] || '');
+    if (mobileChanged) updates['Mobile No.'] = formData['Mobile No.'];
+
+    const post = emp['Post'] || '';
+    if (formData.post && formData.post.toLowerCase() !== post.toLowerCase()) {
+      updates['Post'] = formData.post;
+    }
+
+    const rank = emp['Rank'] || '';
+    if (formData.rank && formData.rank.toLowerCase() !== rank.toLowerCase()) {
+      updates['Rank'] = formData.rank;
+    }
+
+    if (formData.location && formData.location.toLowerCase() !== (emp['Location'] || '').toLowerCase()) {
+      updates['Location'] = formData.location;
+    }
+
+    if (Object.keys(updates).length <= 1) return;
+
+    try {
+      await API.saveEmployee(updates, Auth.token);
+
+      Object.keys(updates).forEach(k => { if (k !== tokenKey) emp[k] = updates[k]; });
+
+      const idx = Employee.cache.findIndex(e =>
+        (e['Tokan No.'] || e['Token No.']) === token
+      );
+      if (idx !== -1) Object.assign(Employee.cache[idx], updates);
+
+      Auth.showToast('Employee record updated');
+    } catch (err) {
+      console.warn('Failed to update employee:', err.message);
     }
   },
   
@@ -147,7 +203,7 @@ const Receipt = {
     });
     
     // Radio groups
-    ['designation', 'location', 'status'].forEach(name => {
+    ['post', 'rank', 'location', 'status'].forEach(name => {
       const checked = this.form.querySelector('input[name="' + name + '"]:checked');
       if (!checked) {
         this.form.querySelectorAll('input[name="' + name + '"]').forEach(r => r.classList.add('error'));
@@ -162,11 +218,21 @@ const Receipt = {
   
   collectFormData() {
     const fd = new FormData(this.form);
-    const data = {};
-    fd.forEach((v, k) => data[k] = v);
+    const raw = {};
+    fd.forEach((v, k) => raw[k] = v);
+    
+    // Map form field names to backend column names
+    const data = {
+      'Employee Name': raw.empName || '',
+      'Token No.': raw.empToken || '',
+      'Mobile No.': raw.empMobile || '',
+      'Amount': raw.amount || '',
+      'Receipt No.': raw.receiptNo || '',
+      'Remark': raw.remark || ''
+    };
     
     // Get radio values
-    ['designation', 'location', 'status'].forEach(name => {
+    ['post', 'rank', 'location', 'status'].forEach(name => {
       const checked = this.form.querySelector('input[name="' + name + '"]:checked');
       if (checked) {
         data[name] = checked.value === 'other' 
@@ -174,6 +240,9 @@ const Receipt = {
           : checked.value;
       }
     });
+    
+    // Combine Post + Rank into Designation for receipt
+    data.Designation = [data.post, data.rank].filter(Boolean).join(' ');
     
     if (this.editMode && this.editId) data.ID = this.editId;
     return data;
@@ -183,6 +252,7 @@ const Receipt = {
     this.form.reset();
     this.form.querySelectorAll('[data-other-for]').forEach(el => el.classList.add('hidden'));
     this.form.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+    this.selectedEmployee = null;
     
     // Reset defaults
     const amountEl = this.form.querySelector('[name="amount"]');
@@ -323,8 +393,20 @@ const Receipt = {
       if (el) el.value = r[key] || '';
     });
     
-    // Radio values
-    this.setRadioValue('designation', r['Designation'] || '');
+    // Radio values - split Designation into Post and Rank
+    const designation = r['Designation'] || '';
+    const ranks = ['HSK-II', 'HSK1', 'SK', 'MCM', 'UDC', 'LDC'];
+    let postVal = designation;
+    let rankVal = '';
+    for (const rk of ranks) {
+      if (designation.toLowerCase().endsWith(rk.toLowerCase())) {
+        rankVal = designation.slice(designation.length - rk.length);
+        postVal = designation.slice(0, designation.length - rk.length).trim();
+        break;
+      }
+    }
+    this.setRadioValue('post', postVal);
+    this.setRadioValue('rank', rankVal);
     this.setRadioValue('location', r['Location'] || '');
     this.setRadioValue('status', r['Status'] || 'Paid');
     
@@ -358,7 +440,7 @@ const FormPersist = {
     const data = {};
     new FormData(form).forEach((v, k) => data[k] = v);
     // Radio values
-    ['designation', 'location', 'status'].forEach(name => {
+    ['post', 'rank', 'location', 'status'].forEach(name => {
       const checked = form.querySelector('input[name="' + name + '"]:checked');
       if (checked) data[name] = checked.value === 'other' 
         ? form.querySelector('[data-other-for="' + name + '"]')?.value || ''
@@ -374,7 +456,7 @@ const FormPersist = {
       if (el && el.type !== 'radio') el.value = v;
     });
     // Restore radios
-    ['designation', 'location', 'status'].forEach(name => {
+    ['post', 'rank', 'location', 'status'].forEach(name => {
       if (data[name]) {
         const radio = form.querySelector('input[name="' + name + '"][value="' + data[name] + '"]');
         if (radio) radio.checked = true;

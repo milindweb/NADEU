@@ -76,7 +76,6 @@ const Employee = {
       'empName': ['Name'],
       'empToken': ['Tokan No.', 'Token No.'],
       'empMobile': ['Mobile No.'],
-      'designation': ['Rank', 'Post'],
       'location': ['Location']
     };
     
@@ -92,8 +91,9 @@ const Employee = {
       }
     });
     
-    // Update radio buttons
-    this.setRadioValue(form, 'designation', emp['Rank'] || emp['Post'] || '');
+    // Update radio buttons for Post and Rank
+    this.setRadioValue(form, 'post', emp['Post'] || '');
+    this.setRadioValue(form, 'rank', emp['Rank'] || '');
     this.setRadioValue(form, 'location', emp['Location'] || '');
     
     // Save to localStorage for reuse
