@@ -130,10 +130,6 @@ const Receipt = {
       const data = this.collectFormData();
       const res = await API.saveReceipt(data, Auth.token);
       
-      if (this.selectedEmployee) {
-        await this.saveEmployeeEdits(data);
-      }
-      
       const receiptNo = data['Receipt No.'] || '';
       const msg = (this.editMode ? 'Receipt updated' : 'Receipt saved') + (receiptNo ? ' — #' + receiptNo : '');
       this.showFormMessage(msg, 'success');

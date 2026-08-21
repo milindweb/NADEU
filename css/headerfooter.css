@@ -1,6 +1,7 @@
 /* headerfooter.css - Shared header & footer styles */
 
-.site-header {
+.site-header,
+.app-header {
   background: var(--primary);
   color: #fff;
   box-shadow: var(--shadow);
@@ -8,7 +9,8 @@
   top: 0;
   z-index: 1000;
 }
-.header-inner {
+
+.site-header .header-inner {
   max-width: 1100px;
   margin: 0 auto;
   display: flex;
@@ -16,6 +18,7 @@
   justify-content: space-between;
   padding: 0.6rem 1rem;
 }
+
 .header-logo {
   display: flex;
   align-items: center;
@@ -25,19 +28,18 @@
   font-weight: 700;
   font-size: 1rem;
 }
+
 .header-logo img { flex-shrink: 0; border-radius: 50%; }
 .header-title-wrap { display: flex; flex-direction: column; }
 .header-title { font-size: 1rem; font-weight: 700; white-space: nowrap; line-height: 1.2; }
 .header-subtitle { font-size: 0.6rem; letter-spacing: 0.5px; opacity: 0.8; white-space: nowrap; }
-.header-nav { display: flex; gap: 1.25rem; }
-.header-nav a {
-  color: rgba(255,255,255,0.85);
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-.header-nav a:hover { color: #fff; }
+
+.header-left { display: flex; align-items: center; gap: 10px; }
+.header-left h1 { font-size: 1.1rem; font-weight: 600; white-space: nowrap; }
+
+.header-right { display: flex; align-items: center; gap: 10px; }
+.user-badge { font-size: 0.75rem; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 20px; }
+
 .header-actions { display: flex; gap: 0.5rem; }
 .header-btn {
   background: rgba(255,255,255,0.15);
@@ -51,6 +53,18 @@
 }
 .header-btn:hover { background: rgba(255,255,255,0.25); }
 
+.icon-btn {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 1.2rem;
+  padding: 6px;
+  border-radius: var(--radius-sm, 4px);
+  cursor: pointer;
+  opacity: 0.9;
+}
+.icon-btn:hover { opacity: 1; background: rgba(255,255,255,0.1); }
+
 .site-footer {
   border-top: 1px solid var(--border);
   padding: 1.5rem 1rem;
@@ -59,11 +73,12 @@
   font-size: 0.85rem;
 }
 .footer-inner { max-width: 1100px; margin: 0 auto; }
-.footer-recognition { font-size: 0.8rem; margin-bottom: 0.25rem; color: var(--text-secondary); }
-.footer-credit { font-size: 0.8rem; font-weight: 600; color: var(--accent); margin-bottom: 0.25rem; }
+.footer-founder { font-size: 0.8rem; margin-bottom: 0.25rem; color: var(--text-secondary); }
 .footer-copy { font-size: 0.75rem; color: var(--text-muted); }
 
 @media (max-width: 600px) {
   .header-nav { gap: 0.75rem; }
   .header-nav a { font-size: 0.8rem; }
+  .header-title { font-size: 0.9rem; }
+  .header-subtitle { font-size: 0.55rem; }
 }

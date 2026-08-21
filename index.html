@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#1a3a5f">
   <title>NAD Employees Union - Receipt</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/headerfooter.css">
   <link rel="manifest" href="data/manifest.json">
   <link rel="icon" type="image/png" sizes="48x48" href="img/favicon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
@@ -28,21 +29,7 @@
 
   <!-- Main App -->
   <div id="app" class="screen">
-    <!-- Sticky Header -->
-    <header class="app-header">
-      <div class="header-left">
-        <a href="index.html" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:10px">
-          <img class="logo-sm" src="img/logo-192.png" alt="NAD Employees Union" width="32" height="32" style="border-radius:50%">
-          <h1>NAD Employees Union</h1>
-        </a>
-      </div>
-      <div class="header-right">
-        <span id="currentUser" class="user-badge"></span>
-        <button id="changePwdBtn" class="icon-btn" title="Change Password" aria-label="Change password">&#128273;</button>
-        <button id="themeToggle" class="icon-btn" title="Toggle theme" aria-label="Toggle dark mode">&#127769;</button>
-        <button id="logoutBtn" class="icon-btn" title="Logout">&#9211;</button>
-      </div>
-    </header>
+    <div id="header"></div>
 
     <main class="app-main">
       <!-- Search Box -->
@@ -164,7 +151,8 @@
       </section>
 
       </main>
-  </div>
+
+  <div id="footer"></div>
 
   <!-- Toast Container -->
   <div id="toastContainer"></div>
@@ -175,5 +163,6 @@
   <script src="js/auth.js?v=3"></script>
   <script src="js/employee.js?v=3"></script>
   <script src="js/receipt.js?v=3"></script>
+  <script src="js/headerfooter.js"></script>
 </body>
 </html>

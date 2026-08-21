@@ -8,7 +8,6 @@ const Theme = {
   init() {
     const saved = localStorage.getItem('nadeu_theme') || 'light';
     this.apply(saved);
-    this.bindToggle();
   },
 
   apply(theme) {
@@ -29,10 +28,6 @@ const Theme = {
       btn.textContent = theme === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
       btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
     }
-  },
-
-  bindToggle() {
-    document.getElementById('themeToggle')?.addEventListener('click', () => this.toggle());
   }
 };
 
@@ -57,7 +52,6 @@ const Auth = {
   },
 
   bindEvents() {
-    document.getElementById('logoutBtn')?.addEventListener('click', () => this.logout());
     document.getElementById('changePwdBtn')?.addEventListener('click', () => this.showChangePasswordModal());
   },
 
@@ -112,6 +106,10 @@ const Auth = {
     const el = document.getElementById('currentUser');
     if (el && this.user) {
       el.textContent = this.user.name || this.user.username;
+    }
+    // Also update via SiteHeader if available
+    if (typeof SiteHeader !== 'undefined') {
+      SiteHeader.updateUser();
     }
   },
 
