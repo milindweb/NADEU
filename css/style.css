@@ -56,6 +56,11 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); line
 .login-header p { color: var(--text-muted); font-size: 0.9rem; }
 .login-footer { text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 0.8rem; }
 
+/* Auth Form Switch */
+.auth-switch { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 16px; font-size: 0.85rem; color: var(--text-muted); }
+.auth-switch a { color: var(--accent); text-decoration: none; font-weight: 500; }
+.auth-switch a:hover { text-decoration: underline; }
+
 /* Login Form Links */
 .field-links { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.85rem; }
 .forgot-link { color: var(--accent); text-decoration: none; }

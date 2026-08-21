@@ -57,6 +57,15 @@ const Auth = {
   
   bindEvents() {
     document.getElementById('loginForm')?.addEventListener('submit', (e) => this.handleLogin(e));
+    document.getElementById('registerForm')?.addEventListener('submit', (e) => this.handleRegister(e));
+    document.getElementById('switchToRegister')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.toggleAuthForm('register');
+    });
+    document.getElementById('switchToLogin')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.toggleAuthForm('login');
+    });
     document.getElementById('logoutBtn')?.addEventListener('click', () => this.logout());
     document.getElementById('changePwdBtn')?.addEventListener('click', () => this.showChangePasswordModal());
     document.getElementById('rememberMe')?.addEventListener('change', (e) => {
@@ -67,6 +76,88 @@ const Auth = {
       e.preventDefault();
       this.handleForgotPassword();
     });
+  },
+
+  toggleAuthForm(mode) {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const loginSwitch = document.querySelector('.auth-switch:not(#registerSwitch)');
+    const registerSwitch = document.getElementById('registerSwitch');
+    
+    if (mode === 'register') {
+      loginForm?.classList.add('hidden');
+      registerForm?.classList.remove('hidden');
+      loginSwitch?.classList.add('hidden');
+      registerSwitch?.classList.remove('hidden');
+      document.getElementById('regUsername')?.focus();
+    } else {
+      loginForm?.classList.remove('hidden');
+      registerForm?.classList.add('hidden');
+      loginSwitch?.classList.remove('hidden');
+      registerSwitch?.classList.add('hidden');
+      document.getElementById('username')?.focus();
+    }
+  },
+
+  async register(username, password, name, email, mobile) {
+    const res = await API.register({ username, password, name, email, mobile });
+    return res;
+  },
+
+  async handleRegister(e) {
+    e.preventDefault();
+    const form = e.target;
+    const username = form.username.value.trim();
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const mobile = form.mobile.value.trim();
+    const password = form.password.value;
+    const confirm = form.confirm.value;
+    
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const mobileRe = /^[6-9]\d{9}$/;
+    
+    if (username.length < 3) {
+      this.showError(form, 'Username must be at least 3 characters');
+      return;
+    }
+    if (!name) {
+      this.showError(form, 'Please enter your full name');
+      return;
+    }
+    if (!emailRe.test(email)) {
+      this.showError(form, 'Please enter a valid email address');
+      return;
+    }
+    if (!mobileRe.test(mobile)) {
+      this.showError(form, 'Please enter a valid 10-digit mobile number');
+      return;
+    }
+    if (password.length < 4) {
+      this.showError(form, 'Password must be at least 4 characters');
+      return;
+    }
+    if (password !== confirm) {
+      this.showError(form, 'Passwords do not match');
+      return;
+    }
+    
+    const btn = form.querySelector('button[type="submit"]');
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Registering...';
+    
+    try {
+      const res = await this.register(username, password, name, email, mobile);
+      this.showToast(res.message || 'Registered successfully! Contact admin for module access.');
+      this.toggleAuthForm('login');
+      form.reset();
+    } catch (err) {
+      this.showError(form, err.message || 'Registration failed');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalText;
+    }
   },
 
   handleForgotPassword() {
@@ -158,6 +249,11 @@ const Auth = {
     return false;
   },
   
+  async register(username, password, name, email, mobile) {
+    const res = await API.register({ username, password, name, email, mobile });
+    return res;
+  },
+
   async handleLogin(e) {
     e.preventDefault();
     const form = e.target;
