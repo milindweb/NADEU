@@ -69,7 +69,73 @@ const Auth = {
   },
 
   handleForgotPassword() {
-    this.showToast('Contact NAD Employees Union President or Secretary for password reset', 'error');
+    this.showForgotPasswordModal();
+  },
+
+  showForgotPasswordModal() {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Forgot Password</h3>
+          <button class="modal-close" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Enter your username or registered email to request a password reset.</p>
+          <form id="forgotPwdForm">
+            <div class="field">
+              <label for="fpIdentifier">Username or Email</label>
+              <input type="text" id="fpIdentifier" name="identifier" autocomplete="username" required placeholder="Enter username or email">
+            </div>
+            <div class="error-msg hidden"></div>
+            <div class="btn-group">
+              <button type="submit" class="btn-primary">Request Reset</button>
+              <button type="button" class="btn-secondary modal-close">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    
+    // Focus input
+    setTimeout(() => modal.querySelector('#fpIdentifier')?.focus(), 100);
+    
+    // Close handlers
+    modal.querySelectorAll('.modal-close').forEach(btn => {
+      btn.addEventListener('click', () => modal.remove());
+    });
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.remove();
+    });
+    
+    // Form submit
+    modal.querySelector('#forgotPwdForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.handleForgotPasswordSubmit(e.target, modal);
+    });
+  },
+
+  async handleForgotPasswordSubmit(form, modal) {
+    const identifier = form.identifier.value.trim();
+    if (!identifier) return;
+    
+    const btn = form.querySelector('button[type="submit"]');
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    
+    try {
+      const res = await API.forgotPassword(identifier);
+      this.showToast(res.message || 'Reset request sent');
+      modal.remove();
+    } catch (err) {
+      this.showError(form, err.message || 'Request failed');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalText;
+    }
   },
   
   async checkSession() {

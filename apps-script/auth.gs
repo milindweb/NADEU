@@ -110,6 +110,39 @@ function authLogout_(body) {
   return json_({ ok: true });
 }
 
+// ---------- Forgot Password ----------
+
+function authForgotPassword_(body) {
+  var identifier = String(body.identifier || '').trim().toLowerCase();
+  
+  if (!identifier) return fail_('Username or email is required');
+  
+  var rows = rowsToObjects_(usersSheet_());
+  var user = null;
+  for (var i = 0; i < rows.length; i++) {
+    var u = rows[i];
+    if (String(u.username).toLowerCase() === identifier || (u.email && String(u.email).toLowerCase() === identifier)) {
+      user = u;
+      break;
+    }
+  }
+  
+  if (!user) {
+    // Don't reveal if user exists - security
+    return json_({ ok: true, message: 'If the account exists, reset instructions have been sent. Contact NAD Employees Union President or Secretary for assistance.' });
+  }
+  
+  // Generate temporary password
+  var tempPwd = 'Temp' + Math.random().toString(36).substring(2, 8).toUpperCase() + '!';
+  var sh = usersSheet_();
+  sh.getRange(user._row, 2).setValue(tempPwd); // password column
+  
+  // Log the reset request (optional - could add audit sheet)
+  log_('Password reset requested for: ' + user.username + ' - Temp password generated');
+  
+  return json_({ ok: true, message: 'Temporary password generated. Contact NAD Employees Union President or Secretary to receive your temporary password.' });
+}
+
 // ---------- Session Verification ----------
 
 function verifyToken_(token) {

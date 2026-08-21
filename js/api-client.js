@@ -40,10 +40,14 @@ const API = {
     return this.call('currentUser', {}, token);
   },
   
-  logout(token) {
+logout(token) {
     return this.call('logout', {}, token);
   },
-  
+
+  forgotPassword(identifier) {
+    return this.call('forgotPassword', {}, null, { identifier });
+  },
+
   // Employee
   syncEmployees(token) {
     return this.call('syncEmployees', [], token);

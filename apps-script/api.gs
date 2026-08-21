@@ -11,7 +11,7 @@ function doPost(e) {
     var token = body.token || '';
     
     // Public endpoints (no auth required)
-    var publicEndpoints = ['login', 'register', 'check', 'currentUser'];
+    var publicEndpoints = ['login', 'register', 'forgotPassword', 'check', 'currentUser'];
     if (publicEndpoints.indexOf(fn) !== -1) {
       return routePublic(fn, args, body);
     }
@@ -69,6 +69,7 @@ function routePublic(fn, args, body) {
   var map = {
     'login': authLogin_,
     'register': authRegister_,
+    'forgotPassword': authForgotPassword_,
     'check': authCheck_,
     'currentUser': currentUserFromToken_
   };
@@ -136,6 +137,16 @@ function doGet(e) {
   
   return ContentService.createTextOutput('NAD Employees Union API - POST only')
     .setMimeType(ContentService.MimeType.TEXT);
+}
+
+function doOptions(e) {
+  return ContentService.createTextOutput('')
+    .setMimeType(ContentService.MimeType.TEXT)
+    .setHeaders({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    });
 }
 
 // ===== Include other modules =====
