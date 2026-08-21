@@ -192,7 +192,7 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
 .panel-header h3 { font-size: 0.9rem; font-weight: 600; }
 .panel-controls { display: flex; align-items: center; gap: 8px; }
 .select-sm { padding: 6px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.8rem; background: var(--card); }
-#recentList { overflow: hidden; transition: max-height 0.3s ease, opacity 0.2s ease; }
+#recentList { overflow: hidden; transition: max-height 0.3s ease, opacity 0.2s ease; max-height: 400px; overflow-y: auto; }
 #recentList.collapsed { max-height: 0; opacity: 0; padding: 0; pointer-events: none; }
 
 /* Table */
