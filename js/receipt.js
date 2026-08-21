@@ -169,8 +169,8 @@ const Receipt = {
       updates['Post'] = formData.Designation;
     }
 
-    if (formData.location && formData.location.toLowerCase() !== (emp['Location'] || '').toLowerCase()) {
-      updates['Location'] = formData.location;
+    if (formData.Location && formData.Location.toLowerCase() !== (emp['Location'] || '').toLowerCase()) {
+      updates['Location'] = formData.Location;
     }
 
     if (Object.keys(updates).length <= 1) return;
@@ -262,7 +262,10 @@ const Receipt = {
     // Get radio values (skip designation — uses text input)
     ['location', 'status'].forEach(name => {
       const checked = this.form.querySelector('input[name="' + name + '"]:checked');
-      if (checked) data[name] = checked.value;
+      if (checked) {
+        const key = name === 'location' ? 'Location' : name.charAt(0).toUpperCase() + name.slice(1);
+        data[key] = checked.value;
+      }
     });
     
     // Designation from text input (radio clicks populate it)
