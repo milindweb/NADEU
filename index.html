@@ -80,9 +80,15 @@
           </div>
         </fieldset>
 
-        <div class="field">
-          <label>Mobile No.</label>
-          <input type="tel" name="empMobile" autocomplete="tel">
+        <div class="form-row">
+          <div class="field">
+            <label>Mobile No.</label>
+            <input type="tel" name="empMobile" autocomplete="tel" placeholder="Optional">
+          </div>
+          <div class="field">
+            <label>Remark</label>
+            <textarea name="remark" rows="1" placeholder="Optional"></textarea>
+          </div>
         </div>
 
         <fieldset class="radio-group">
@@ -113,11 +119,6 @@
             <label class="radio-label"><input type="radio" name="status" value="Pending"> Pending</label>
           </div>
         </fieldset>
-
-        <div class="field">
-          <label>Remark</label>
-          <textarea name="remark" rows="2" placeholder="Optional"></textarea>
-        </div>
 
         <div class="btn-group">
           <button type="submit" class="btn-primary">Submit</button>
