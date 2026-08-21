@@ -11,13 +11,11 @@ const Receipt = {
   selectedEmployee: null,
   
   async init() {
-    console.log('[NADEU] Receipt.init() called');
     this.form = document.getElementById('receiptForm');
     this.recentTable = document.getElementById('recentTable');
     this.bindEvents();
     FormPersist.restore(this.form);
     await Employee.load();
-    console.log('[NADEU] Employee loaded, cache size:', Employee.cache.length);
     this.loadRecent();
     
     // Set default amount
@@ -329,7 +327,6 @@ const Receipt = {
   },
   
   async loadRecent() {
-    console.log('[NADEU] loadRecent() called, Auth.token:', Auth.token ? 'present' : 'MISSING');
     if (!Auth.token) return;
     
     try {
@@ -343,15 +340,8 @@ const Receipt = {
       );
       
       const result = res.data;
-      console.log('[NADEU] loadRecent raw response:', JSON.stringify(res).substring(0, 500));
-      console.log('[NADEU] loadRecent result:', result);
       const receipts = Array.isArray(result) ? result : (Array.isArray(result?.data) ? result.data : []);
       const pag = result?.pagination || { page: 1, pageSize: 10, total: 0, totalPages: 0 };
-      console.log('[NADEU] loadRecent parsed receipts:', receipts.length, 'rows');
-      if (receipts.length > 0) {
-        console.log('[NADEU] loadRecent first row keys:', Object.keys(receipts[0]));
-        console.log('[NADEU] loadRecent first row:', receipts[0]);
-      }
       this.renderRecentTable(receipts, pag);
     } catch (err) {
       console.error('Failed to load recent:', err);

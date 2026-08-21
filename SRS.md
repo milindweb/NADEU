@@ -14,10 +14,14 @@ This document specifies the functional and non-functional requirements for the N
 
 ### 1.2 Scope
 The system provides:
+- Multi-page web application (Login, Register, About, Main App)
 - Employee search and auto-fill from a master employee database
 - Receipt entry with validation, defaults, and editable fields
 - Recent receipts table with sorting, filtering, and pagination
 - Role-based authentication with module-level permissions
+- Shared site header/footer with navigation across all pages
+- About page with team info and contact form
+- SEO (Open Graph, Twitter Cards, robots.txt, sitemap.xml)
 - PWA-capable frontend deployable to any static host
 
 ### 1.3 Definitions & Acronyms
@@ -44,7 +48,7 @@ The system provides:
 | **Founder** | संस्थापक : मयूर कमल विठ्ठल म्हात्रे (Mayur Kamal Vitthal Mhatre) |
 | **Founder Inspiration** | वि. दा. म्हात्रे प्रेरणास्थान (Inspired by V.D. Mhatre) |
 | **President** | Pravin Ingle |
-| **President Mobile** | 99692009765 |
+| **President Mobile** | 9969200976 |
 | **Office** | Shop No. 09, Shreyash Appt., Uran, Navi Mumbai |
 | **Email** | nadeu2016@gmail.com |
 | **Mobile** | 9082080690 |
@@ -84,7 +88,9 @@ When a receipt is submitted, the following employee and transaction details are 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    Frontend (Static)                        │
-│  index.html + css/style.js + js/*.js + data/manifest.json  │
+│  login.html + register.html + about.html + index.html      │
+│  css/style.css + css/headerfooter.css + js/*.js            │
+│  fonts/ + img/ + data/manifest.json                        │
 │                    (Cloudflare Pages)                       │
 └────────────────────────────┬────────────────────────────────┘
                              │ HTTPS POST (JSON)
@@ -109,11 +115,13 @@ When a receipt is submitted, the following employee and transaction details are 
 | Layer | Technology |
 |-------|------------|
 | Frontend | HTML5, CSS3 (CSS Variables), Vanilla ES6+ JavaScript |
+| Styling | css/style.css (~19KB), css/headerfooter.css (~2KB) |
+| Icons/Fonts | FontAwesome 6.4, Bootstrap Icons, Glyphicons (self-hosted in `fonts/`) |
 | Backend | Google Apps Script (V8 runtime) |
 | Database | Google Sheets (3 spreadsheets) |
 | Auth | Session tokens in Sheets, localStorage on client |
 | Deployment | Cloudflare Pages (frontend), GAS Web App (backend) |
-| Icons/Fonts | FontAwesome 6.4, Bootstrap Icons, Glyphicons |
+| SEO | Open Graph, Twitter Cards, robots.txt, sitemap.xml |
 
 ### 2.3 Data Stores
 | Spreadsheet | Sheet/Tab | Purpose |
@@ -121,7 +129,7 @@ When a receipt is submitted, the following employee and transaction details are 
 | **Auth** (`1hk3FWRTFcQbwfuTYhtKPWZfDmHLxqzCtGjzpfYteUYk`) | `Users` | username, password, role, modules, name, email, mobile, createdAt |
 | | `Sessions` | token, username, role, modules, created |
 | **Employee Master** (`1y22M8qo2aK4DFYsI7S7nLDzP33GFbzo9TsDlEX1jL98`) | `Employees` | 22 columns: Sr No., Tokan No., Name, Post, Rank, Category, Location, DOB, DOR, DOA, DOReg, DeptQual, DateTM, DateUSL, DateSSK, DateSK, DateHSK2, DateHSK1, DateMCM, Mobile No., Email, Remark |
-| **Receipt** (`1CzgHgaqE48IyFdCIKDbH0bW_fuHjXpgLsDYSKWXllVU`) | `Receipts` | ID, Date, Token No., Employee Name, Designation, Mobile No., Location, Amount, Status, Receipt No., Remark, Created By, Created At |
+| **Receipt** (`1CzgHgaqE48IyFdCIKDbH0bW_fuHjXpgLsDYSKWXllVU`) | `Receipts` | 14 columns: ID, Date, Token No., Employee Name, Designation, Section, Mobile No., Location, Amount, Status, Receipt No., Remark, Created By, Created At |
 
 ---
 
@@ -136,12 +144,12 @@ When a receipt is submitted, the following employee and transaction details are 
 | FR-AUTH-03 | "Remember me" — persistent localStorage session across browser restarts | Must | ✅ |
 | FR-AUTH-04 | Session verification on each protected API call | Must | ✅ |
 | FR-AUTH-05 | Logout invalidates server-side session token | Must | ✅ |
-| FR-AUTH-06 | Default admin user created on first setup (`admin`/`0000`) | Must | ✅ |
+| FR-AUTH-06 | Default admin user created on first setup (`admin`/`admin123`) | Must | ✅ |
 | FR-AUTH-07 | User registration (creates user with no module access) | Should | ✅ |
 | FR-AUTH-08 | Forgot password — generates temporary password, admin must deliver | Should | ✅ |
 | FR-AUTH-09 | Change password (authenticated user) | Should | ✅ |
 | FR-AUTH-10 | Role-based access: `admin` = full access, `user` = module list | Must | ✅ |
-| FR-AUTH-11 | Module permissions: `receipt` (read), `receipt:admin` (read+write) | Must | ✅ |
+| FR-AUTH-11 | Module permissions: `receipt` module; admin access via `role === 'admin'` | Must | ✅ |
 | FR-AUTH-12 | Admin user management (list, update role/modules, delete) | Should | ✅ |
 
 ### 3.2 Employee Master Module (FR-EMP)
@@ -178,18 +186,19 @@ When a receipt is submitted, the following employee and transaction details are 
 
 | ID | Requirement | Priority | Status |
 |----|-------------|----------|--------|
-| FR-FE-RCP-01 | Single-page app with login screen and main app | Must | ✅ |
+| FR-FE-RCP-01 | Multi-page app: login.html, register.html, about.html, index.html | Must | ✅ |
 | FR-FE-RCP-02 | Search input with debounced employee lookup (300ms) | Must | ✅ |
 | FR-FE-RCP-03 | Search results dropdown: Name, Token, Location, Rank/Post | Must | ✅ |
 | FR-FE-RCP-04 | Click result → auto-populate form fields | Must | ✅ |
 | FR-FE-RCP-05 | All form fields editable after auto-fill | Must | ✅ |
-| FR-FE-RCP-06 | Radio groups: Designation (7), Location (4), Status (2) + "Other" | Must | ✅ |
-| FR-FE-RCP-07 | "Other" radio → reveals custom text input | Must | ✅ |
+| FR-FE-RCP-06 | Radio groups: Designation (5 options + free-text), Location (4), Status (2) | Must | ✅ |
+| FR-FE-RCP-07 | Free-text designation input accepts custom values | Must | ✅ |
 | FR-FE-RCP-08 | Required field validation (visual error state) | Must | ✅ |
 | FR-FE-RCP-09 | Form data persistence in localStorage (survives refresh) | Must | ✅ |
 | FR-FE-RCP-10 | Clear form button resets to defaults | Must | ✅ |
 | FR-FE-RCP-11 | Submit → loading state → toast notification | Must | ✅ |
 | FR-FE-RCP-12 | Click recent table row → load for edit (scroll to form) | Must | ✅ |
+| FR-FE-RCP-13 | Section field (optional text input) between Designation and Mobile | Must | ✅ |
 
 ### 3.5 Frontend - Recent Receipts Table (FR-FE-TBL)
 
@@ -209,12 +218,16 @@ When a receipt is submitted, the following employee and transaction details are 
 |----|-------------|----------|--------|
 | FR-FE-UI-01 | Mobile-first responsive design (breakpoints: 480, 600, 768px) | Must | ✅ |
 | FR-FE-UI-02 | Dark/Light mode toggle with localStorage persistence | Must | ✅ |
-| FR-FE-UI-03 | OS preference detection (prefers-color-scheme) | Should | ✅ |
+| FR-FE-UI-03 | OS preference detection (prefers-color-scheme) | Should | ❌ |
 | FR-FE-UI-04 | Theme toggle icon (moon/sun) with aria-label | Must | ✅ |
 | FR-FE-UI-05 | Toast notifications (success/error, auto-dismiss 3s) | Must | ✅ |
-| FR-FE-UI-06 | Sticky header with user badge, theme toggle, logout | Must | ✅ |
+| FR-FE-UI-06 | Sticky header with user badge, theme toggle, change password, logout | Must | ✅ |
 | FR-FE-UI-07 | PWA manifest with icons (64-512px), installable | Should | ✅ |
-| FR-FE-UI-08 | Compact CSS (~4KB) using CSS custom properties | Should | ✅ |
+| FR-FE-UI-08 | Compact CSS using CSS custom properties (~20KB total) | Should | ✅ |
+| FR-FE-UI-09 | Change password modal (current/new/confirm fields) via header button | Should | ✅ |
+| FR-FE-UI-10 | Shared site header/footer (navigation: Home, About, tagline, founder) | Should | ✅ |
+| FR-FE-UI-11 | About page with team info and contact form | Should | ✅ |
+| FR-FE-UI-12 | SEO: Open Graph, Twitter Cards, robots.txt, sitemap.xml | Should | ✅ |
 
 ---
 
@@ -268,9 +281,9 @@ When a receipt is submitted, the following employee and transaction details are 
 ## 5. API Specification
 
 ### 5.1 Request Format
-```json
+```
 POST /exec
-Content-Type: application/json
+Content-Type: text/plain (GAS workaround — application/json not supported)
 
 {
   "fn": "functionName",
@@ -327,17 +340,20 @@ Content-Type: application/json
 ## 6. User Interface Specification
 
 ### 6.1 Screens
-1. **Login Screen** — Username, password, remember me, forgot password, sign in
-2. **Main App** — Sticky header, search section, receipt form, recent entries panel
+1. **Login Screen** (`login.html`) — Username, password, remember me, forgot password, sign in, register link
+2. **Register Screen** (`register.html`) — Username, full name, email, mobile, password, confirm password, register button
+3. **About Screen** (`about.html`) — Team info card, contact form component
+4. **Main App** (`index.html`) — Sticky header (with change password button), search section, receipt form, recent entries panel
 
 ### 6.2 Receipt Form Fields
 | Field | Type | Required | Default | Options |
 |-------|------|----------|---------|---------|
 | Employee Name | text | Yes | — | — |
 | Token No. | text | Yes | — | — |
-| Designation | radio | Yes | — | T-MATE, SK, HSK1, HSK-II, MCM, UDC, LDC, Other |
+| Designation | text + radio | Yes | — | T-MATE, SK, HSK-I, HSK-II, MCM (+ free-text input) |
+| Section | text | No | — | — |
 | Mobile No. | tel | No | — | — |
-| Location | radio | Yes | — | NAD(K), NAD(T), NAD(M), NAD(KR), Other |
+| Location | radio | Yes | — | NAD(K), NAD(T), NAD(M), NAD(KR) |
 | Amount (₹) | number | Yes | 200 | min=0, step=1 |
 | Receipt No. | text | Yes | — | Manual entry |
 | Status | radio | Yes | Paid | Paid, Pending |
