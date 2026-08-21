@@ -1,30 +1,34 @@
 # Project Status
 
-## ✅ Completed
+## ✅ Completed (v1.0.0 - 2026-01-21)
 
 ### Backend (Google Apps Script)
 - [x] `config.gs` - Configuration with 3 Sheet IDs
 - [x] `auth.gs` - Auth module (login, register, logout, session, module guard)
-- [x] `employee.gs` - Employee Master CRUD + search (standalone, no seniority sync)
+- [x] `employee.gs` - Employee Master CRUD + search (standalone, 22 columns)
 - [x] `receipt.gs` - Receipt CRUD + paginated/sorted/filtered list
 - [x] `api.gs` - Router with auth guard and module permissions
 - [x] Sheet IDs configured in config.gs
 - [x] Default admin user (admin/0000) with 'receipt' module
 
-### Frontend (Static)
-- [x] `index.html` - Single-page app structure
-- [x] `css/style.css` - Mobile-first, compact, ~3KB
+### Frontend (Static, Vanilla JS)
+- [x] `index.html` - Single-page app at root
+- [x] `css/style.css` - Mobile-first, compact, ~4KB (includes dark mode)
 - [x] `js/config.js` - API URL placeholder
-- [x] `js/api-client.js` - Fetch wrapper
-- [x] `js/auth.js` - One-click login, localStorage session, module guard
-- [x] `js/employee.js` - Debounced search across all columns, cache
+- [x] `js/api-client.js` - Fetch wrapper with auth token
+- [x] `js/auth.js` - One-click login, localStorage session, theme toggle, module guard
+- [x] `js/employee.js` - Debounced search across all columns, 24hr cache
 - [x] `js/receipt.js` - Form validation, submit, recent table, pagination
-- [x] `manifest.json` - PWA support
-- [x] Search: Token, Name, Mobile, Location, Rank, Post (case-insensitive)
+- [x] `data/manifest.json` - PWA manifest with icons
+- [x] `img/favicon.png` - App icon (64x64)
+- [x] `fonts/` - FontAwesome 6.4, Bootstrap Icons, Glyphicons
+- [x] Search: Token, Name, Mobile, Location, Rank, Post (case-insensitive, 300ms debounce)
 - [x] Radio buttons: Designation (7), Location (4), Status (2) + Other
 - [x] Defaults: Amount=200, Receipt No. manual
 - [x] Recent table: sortable, paginated (10/20/30), collapsible, click to edit
 - [x] Form persistence in localStorage
+- [x] Dark/Light mode toggle with OS preference detection
+- [x] PWA ready - installable on mobile
 
 ### Infrastructure
 - [x] 3 Google Spreadsheets created
@@ -32,22 +36,44 @@
 - [x] Fine-grained PAT added to .env.original
 - [x] .env.original with all Sheet IDs, GitHub info
 - [x] README.md with full deployment guide
-- [x] CHANGELOG.md
+- [x] CHANGELOG.md with version history
 - [x] PROJECT_STATUS.md
-- [x] Frontend moved to root (no frontend/ folder)
+- [x] .gitignore excludes _Archieve, .env, secrets
 
-## 🔄 In Progress
-- [ ] Deploy Apps Script as Web App
-- [ ] Run `setupAll()` to initialize sheets
-- [ ] Update js/config.js with Apps Script URL
-- [ ] Deploy frontend to Cloudflare Pages (output: /)
-- [ ] End-to-end testing
+## 🔄 Next Steps (Manual Deployment Required)
 
-## 📋 Pending
-- [ ] Add more employees to Employee Master sheet
-- [ ] Test with multiple users
-- [ ] Add export functionality (Excel/PDF) - future
-- [ ] Seniority module - separate project
+### Apps Script Deployment
+- [ ] Create new Apps Script project at script.google.com
+- [ ] Copy 5 `.gs` files from `apps-script/`
+- [ ] Deploy as Web App: Execute as Me, Access Anyone
+- [ ] Copy Web App URL
+
+### Initialize Sheets
+- [ ] Run `setupAll()` in Apps Script console
+
+### Frontend Configuration
+- [ ] Update `js/config.js` with Web App URL
+- [ ] Push changes to GitHub
+
+### Cloudflare Pages
+- [ ] Connect repo: `milindweb/NADEU`
+- [ ] Build command: (none)
+- [ ] Output directory: `/` (root)
+- [ ] Deploy
+
+### Testing
+- [ ] Login: admin/0000
+- [ ] Search employees, auto-fill, submit
+- [ ] Verify recent table: sort, paginate, click-to-edit
+- [ ] Test dark/light mode toggle
+- [ ] Test PWA install on mobile
+
+## 📋 Future Enhancements
+- [ ] Export receipts to Excel/PDF
+- [ ] Bulk receipt entry
+- [ ] Email/SMS notifications
+- [ ] Offline support with IndexedDB
+- [ ] Seniority module (separate project)
 
 ## 📝 Notes
 

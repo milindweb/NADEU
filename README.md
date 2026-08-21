@@ -3,20 +3,23 @@
 A mobile-first, compact receipt entry form with auto-search, built on Google Apps Script + Google Sheets.
 
 **Repo:** https://github.com/milindweb/NADEU  
-**Frontend:** Deployed on Cloudflare Pages (root folder)
+**Frontend:** Deployed on Cloudflare Pages (root folder)  
+**Latest Release:** [v1.0.0](https://github.com/milindweb/NADEU/releases/tag/v1.0.0)
 
 ## 🚀 Features
 
-- **Auto-search** by Token No., Name, Mobile, Location, Rank, Post (case-insensitive, debounced)
+- **Auto-search** by Token No., Name, Mobile, Location, Rank, Post (case-insensitive, debounced 300ms)
 - **Auto-fill** form from Employee Master (standalone, editable)
 - **All fields editable** after auto-fill
-- **Radio buttons** for fast selection: Designation (7+), Location (4+), Status (Paid/Pending)
+- **Radio buttons** for fast selection: Designation (7), Location (4), Status (Paid/Pending) + Custom "Other" option
 - **Defaults**: Amount = ₹200, Receipt No. = manual entry
-- **Recent receipts table**: Sortable, filterable, paginated (10/20/30), collapsible
-- **One-click login** with localStorage session persistence
-- **Form data persistence** in localStorage for reuse
-- **Module-based auth** (receipt)
-- **PWA ready** - installable on mobile
+- **Recent receipts table**: Sortable by any column, filterable, paginated (10/20/30), collapsible panel
+- **One-click login** with localStorage session persistence ("Remember me")
+- **Form data persistence** in localStorage for reuse across sessions
+- **Dark/Light mode** toggle with OS preference detection
+- **Module-based auth** (receipt module, extensible for seniority)
+- **PWA ready** - installable on mobile, offline-capable manifest
+- **Responsive design** - mobile-first, works on all screen sizes
 
 ## 📁 Project Structure
 
@@ -24,24 +27,29 @@ A mobile-first, compact receipt entry form with auto-search, built on Google App
 NADEU/
 ├── apps-script/           # Google Apps Script backend
 │   ├── config.gs          # Configuration (Sheet IDs)
-│   ├── auth.gs            # Authentication module
-│   ├── employee.gs        # Employee Master (standalone)
-│   ├── receipt.gs         # Receipt CRUD + pagination
-│   └── api.gs             # Router with module guard
+│   ├── auth.gs            # Authentication module (login, register, session, module guard)
+│   ├── employee.gs        # Employee Master CRUD + search (standalone)
+│   ├── receipt.gs         # Receipt CRUD + pagination/sort/filter
+│   └── api.gs             # Router with auth guard and module permissions
 ├── css/
-│   └── style.css          # Mobile-first, ~3KB
+│   └── style.css          # Mobile-first, ~4KB (includes dark mode)
 ├── js/
-│   ├── config.js          # API endpoint config
-│   ├── api-client.js      # API wrapper
-│   ├── auth.js            # Login, session, module guard
-│   ├── employee.js        # Search, cache
-│   └── receipt.js         # Form, validation, table
+│   ├── config.js          # API endpoint configuration
+│   ├── api-client.js      # API wrapper (fetch with auth token)
+│   ├── auth.js            # Login, session, theme toggle, module guard
+│   ├── employee.js        # Debounced search across all columns, 24hr cache
+│   └── receipt.js         # Form validation, submit, recent table, pagination
+├── fonts/                 # FontAwesome 6.4, Bootstrap Icons, Glyphicons
+├── img/
+│   └── favicon.png        # App icon (64x64)
+├── data/
+│   └── manifest.json      # PWA manifest
 ├── index.html             # Single-page app (root)
-├── manifest.json          # PWA manifest
 ├── .env.original          # Sheet IDs reference (gitignored)
-├── srs.md                 # Software Requirements Spec
+├── .gitignore             # Excludes _Archieve, .env, secrets
+├── srs.md                 # Software Requirements Specification
 ├── CHANGELOG.md           # Version history
-└── PROJECT_STATUS.md      # Current status
+└── PROJECT_STATUS.md      # Current project status
 ```
 
 ## 🛠 Setup & Deployment
@@ -102,8 +110,7 @@ NADEU/
      - **Build command:** (leave empty / none)
      - **Build output directory:** `/` (root)
      - **Root directory:** (leave empty)
-   - Environment variables (if needed):
-     - None required for static frontend
+   - Environment variables: None required
    - Deploy!
 
 ## 🔐 Default Credentials
@@ -164,6 +171,13 @@ python3 -m http.server 8000
 3. Tap search → type token/name → tap result
 4. Form auto-fills → edit if needed → Submit
 5. Recent receipts: tap row to edit, pull to refresh
+
+## 🌙 Theme Support
+
+- **Light mode** (default): Clean blue/white theme
+- **Dark mode**: Slate/blue theme for low-light environments
+- **Persistence**: Theme preference saved in localStorage
+- **Toggle**: Moon/sun icon in header
 
 ## 🔒 Security Notes
 
