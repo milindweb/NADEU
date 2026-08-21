@@ -22,7 +22,8 @@ const Employee = {
     if (!Auth.token) return [];
     
     try {
-      this.cache = await API.getEmployees(Auth.token);
+      const res = await API.getEmployees(Auth.token);
+      this.cache = res.data || [];
       this.cacheTime = now;
       localStorage.setItem(CONFIG.STORAGE_KEYS.EMPLOYEES_CACHE, JSON.stringify(this.cache));
       localStorage.setItem(CONFIG.STORAGE_KEYS.EMPLOYEES_CACHE_TIME, this.cacheTime.toString());
