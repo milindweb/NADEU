@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1a3a5f">
+  <title>NAD Employees Union - Receipt</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="loginScreen" class="screen">
+    <div class="login-box">
+      <div class="login-header">
+        <svg class="logo" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="30" stroke="#1a3a5f" stroke-width="4"/><text x="32" y="38" text-anchor="middle" font-size="24" font-weight="bold" fill="#1a3a5f">NAD</text></svg>
+        <h1>NAD Employees Union</h1>
+        <p>Receipt Management System</p>
+      </div>
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" autocomplete="username" required autofocus>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" autocomplete="current-password" required>
+        </div>
+        <label class="checkbox-field">
+          <input type="checkbox" id="rememberMe" name="rememberMe" checked>
+          <span>Remember me (one-click login)</span>
+        </label>
+        <button type="submit" class="btn-primary btn-block">Sign In</button>
+        <div class="error-msg hidden"></div>
+      </form>
+      <div class="login-footer">
+        <small>Default: admin / 0000</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="app" class="screen hidden">
+    <!-- Sticky Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <svg class="logo-sm" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2"/><text x="16" y="20" text-anchor="middle" font-size="10" font-weight="bold" fill="currentColor">NAD</text></svg>
+        <h1>Receipt Entry</h1>
+      </div>
+      <div class="header-right">
+        <span id="currentUser" class="user-badge"></span>
+        <button id="logoutBtn" class="icon-btn" title="Logout">⏻</button>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <!-- Search Box -->
+      <section class="search-section">
+        <div class="search-box">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="search" id="empSearch" name="empSearch" placeholder="Search: Token, Name, Mobile, Location, Rank, Post..." autocomplete="off">
+          <button id="clearSearch" class="icon-btn hidden" title="Clear">✕</button>
+        </div>
+        <div id="searchResults" class="dropdown hidden"></div>
+      </section>
+
+      <!-- Receipt Form -->
+      <form id="receiptForm" class="receipt-form" novalidate>
+        <div class="form-row">
+          <div class="field">
+            <label>Employee Name <span class="req">*</span></label>
+            <input type="text" name="empName" required autocomplete="name">
+          </div>
+          <div class="field">
+            <label>Token No. <span class="req">*</span></label>
+            <input type="text" name="empToken" required autocomplete="off">
+          </div>
+        </div>
+
+        <fieldset class="radio-group">
+          <legend>Designation <span class="req">*</span></legend>
+          <div class="radio-grid" id="designationRadios">
+            <label class="radio-label"><input type="radio" name="designation" value="T-MATE" required> T-MATE</label>
+            <label class="radio-label"><input type="radio" name="designation" value="SK"> SK</label>
+            <label class="radio-label"><input type="radio" name="designation" value="HSK1"> HSK1</label>
+            <label class="radio-label"><input type="radio" name="designation" value="HSK-II"> HSK-II</label>
+            <label class="radio-label"><input type="radio" name="designation" value="MCM"> MCM</label>
+            <label class="radio-label"><input type="radio" name="designation" value="UDC"> UDC</label>
+            <label class="radio-label"><input type="radio" name="designation" value="LDC"> LDC</label>
+            <label class="radio-label"><input type="radio" name="designation" value="other"> Other</label>
+          </div>
+          <div class="field other-field hidden" data-other-for="designation">
+            <input type="text" name="designationOther" placeholder="Custom designation">
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label>Mobile No.</label>
+          <input type="tel" name="empMobile" autocomplete="tel">
+        </div>
+
+        <fieldset class="radio-group">
+          <legend>Location (Depot) <span class="req">*</span></legend>
+          <div class="radio-grid" id="locationRadios">
+            <label class="radio-label"><input type="radio" name="location" value="NAD(K)" required> NAD(K)</label>
+            <label class="radio-label"><input type="radio" name="location" value="NAD(T)"> NAD(T)</label>
+            <label class="radio-label"><input type="radio" name="location" value="NAD(M)"> NAD(M)</label>
+            <label class="radio-label"><input type="radio" name="location" value="NAD(KR)"> NAD(KR)</label>
+            <label class="radio-label"><input type="radio" name="location" value="other"> Other</label>
+          </div>
+          <div class="field other-field hidden" data-other-for="location">
+            <input type="text" name="locationOther" placeholder="Custom location">
+          </div>
+        </fieldset>
+
+        <div class="form-row">
+          <div class="field">
+            <label>Amount (₹) <span class="req">*</span></label>
+            <input type="number" name="amount" value="200" min="0" step="1" required>
+          </div>
+          <div class="field">
+            <label>Receipt No. <span class="req">*</span></label>
+            <input type="text" name="receiptNo" required autocomplete="off" placeholder="Manual entry">
+          </div>
+        </div>
+
+        <fieldset class="radio-group inline">
+          <legend>Status <span class="req">*</span></legend>
+          <label class="radio-label"><input type="radio" name="status" value="Paid" checked required> Paid</label>
+          <label class="radio-label"><input type="radio" name="status" value="Pending"> Pending</label>
+        </fieldset>
+
+        <div class="field">
+          <label>Remark</label>
+          <textarea name="remark" rows="2" placeholder="Optional"></textarea>
+        </div>
+
+        <div class="btn-group">
+          <button type="submit" class="btn-primary">Submit</button>
+          <button type="button" id="clearForm" class="btn-secondary">Clear</button>
+        </div>
+      </form>
+
+      <!-- Recent Entries - Collapsible Table with Pagination -->
+      <section id="recentEntries" class="recent-panel">
+        <div class="panel-header">
+          <h3>Recent Receipts</h3>
+          <div class="panel-controls">
+            <select id="pageSize" class="select-sm">
+              <option value="10" selected>10 per page</option>
+              <option value="20">20 per page</option>
+              <option value="30">30 per page</option>
+            </select>
+            <button id="toggleRecent" class="icon-btn" title="Collapse/Expand">▼</button>
+          </div>
+        </div>
+        <div id="recentList">
+          <div class="table-wrapper">
+            <table id="recentTable">
+              <thead>
+                <tr>
+                  <th data-sort="Receipt No.">Receipt No.</th>
+                  <th data-sort="Date">Date</th>
+                  <th data-sort="Employee Name">Name</th>
+                  <th data-sort="Token No.">Token</th>
+                  <th data-sort="Amount">Amount</th>
+                  <th data-sort="Status">Status</th>
+                  <th data-sort="Created At">Created</th>
+                </tr>
+              </thead>
+              <tbody id="recentTbody"></tbody>
+            </table>
+          </div>
+          <div id="pagination" class="pagination"></div>
+        </div>
+      </section>
+
+      </main>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/api-client.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/employee.js"></script>
+  <script src="js/receipt.js"></script>
+</body>
+</html>

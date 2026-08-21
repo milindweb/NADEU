@@ -1,0 +1,17 @@
+{
+  "name": "NAD Employees Union - Receipt",
+  "short_name": "NAD Receipt",
+  "description": "Receipt Management System for NAD Employees Union",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f7fa",
+  "theme_color": "#1a3a5f",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='30' fill='%231a3a5f'/><text x='32' y='40' text-anchor='middle' font-size='28' font-weight='bold' fill='white'>NAD</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
