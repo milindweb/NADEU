@@ -28,7 +28,12 @@ const Receipt = {
     this.form.addEventListener('submit', (e) => this.handleSubmit(e));
     
     // Clear form
-    document.getElementById('clearForm')?.addEventListener('click', () => this.clearForm());
+    document.getElementById('clearForm')?.addEventListener('click', () => {
+      const msgEl = document.getElementById('formMessage');
+      if (msgEl) msgEl.className = 'form-message hidden';
+      clearTimeout(this._formMsgTimer);
+      this.clearForm();
+    });
     
     // Search input
     const searchEl = document.getElementById('empSearch');
@@ -292,11 +297,6 @@ const Receipt = {
     this.form.querySelectorAll('[data-other-for]').forEach(el => el.classList.add('hidden'));
     this.form.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
     this.selectedEmployee = null;
-    
-    // Hide form message
-    const msgEl = document.getElementById('formMessage');
-    if (msgEl) msgEl.className = 'form-message hidden';
-    clearTimeout(this._formMsgTimer);
     
     // Reset defaults
     const amountEl = this.form.querySelector('[name="amount"]');
