@@ -239,3 +239,61 @@ function authDeleteUser(body) {
   usersSheet_().deleteRow(user._row);
   return json_({ ok: true });
 }
+
+// ---------- Forgot Password (public) ----------
+
+function authForgotPassword_(body) {
+  var identifier = String(body.identifier || '').trim().toLowerCase();
+  
+  if (!identifier) return fail_('Username or email is required');
+  
+  var rows = rowsToObjects_(usersSheet_());
+  var user = null;
+  for (var i = 0; i < rows.length; i++) {
+    var u = rows[i];
+    if (String(u.username).toLowerCase() === identifier || (u.email && String(u.email).toLowerCase() === identifier)) {
+      user = u;
+      break;
+    }
+  }
+  
+  if (!user) {
+    // Don't reveal if user exists
+    return json_({ ok: true, message: 'If the account exists, a temporary password has been generated. Contact NAD Employees Union President or Secretary to receive it.' });
+  }
+  
+  // Generate temporary password
+  var tempPwd = 'Temp' + Math.random().toString(36).substring(2, 8).toUpperCase() + '!';
+  var sh = usersSheet_();
+  sh.getRange(user._row, 2).setValue(tempPwd); // password column
+  
+  log_('Password reset requested for: ' + user.username + ' - Temp password generated');
+  
+  return json_({ ok: true, message: 'Temporary password generated. Contact NAD Employees Union President or Secretary to receive your temporary password.' });
+}
+
+// ---------- Change Password (authenticated user) ----------
+
+function authChangePassword_(body, token) {
+  var sess = verifyToken_(token);
+  if (!sess) return fail_('Session expired. Please log in again.', 401);
+  var user = findUser_(sess.username);
+  if (!user) return fail_('User not found', 401);
+  
+  var currentPassword = String(body.currentPassword || '');
+  var newPassword = String(body.newPassword || '');
+  var confirmPassword = String(body.confirmPassword || '');
+  
+  if (!currentPassword || !newPassword || !confirmPassword) return fail_('All fields are required');
+  if (newPassword.length < 4) return fail_('New password must be at least 4 characters');
+  if (newPassword !== confirmPassword) return fail_('New passwords do not match');
+  if (String(user.password) !== currentPassword) return fail_('Current password is incorrect');
+  if (String(user.password) === newPassword) return fail_('New password must be different from current password');
+  
+  var sh = usersSheet_();
+  sh.getRange(user._row, 2).setValue(newPassword); // password column
+  
+  log_('Password changed for: ' + user.username);
+  
+  return json_({ ok: true, message: 'Password changed successfully.' });
+}

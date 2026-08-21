@@ -47,7 +47,9 @@ function doPost(e) {
       // Admin
       'authListUsers': CONFIG.modules.RECEIPT,
       'authUpdateUser': CONFIG.modules.RECEIPT,
-      'authDeleteUser': CONFIG.modules.RECEIPT
+      'authDeleteUser': CONFIG.modules.RECEIPT,
+      // Auth (self-service)
+      'changePassword': CONFIG.modules.RECEIPT
     };
     
     var requiredModule = moduleMap[fn];
@@ -85,6 +87,7 @@ function routeProtected(fn, args, body, user) {
   var map = {
     // Auth
     'logout': authLogout_,
+    'changePassword': authChangePassword_,
     'authListUsers': authListUsers,
     'authUpdateUser': authUpdateUser,
     'authDeleteUser': authDeleteUser,

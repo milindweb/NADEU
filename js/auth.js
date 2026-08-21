@@ -58,6 +58,7 @@ const Auth = {
   bindEvents() {
     document.getElementById('loginForm')?.addEventListener('submit', (e) => this.handleLogin(e));
     document.getElementById('logoutBtn')?.addEventListener('click', () => this.logout());
+    document.getElementById('changePwdBtn')?.addEventListener('click', () => this.showChangePasswordModal());
     document.getElementById('rememberMe')?.addEventListener('change', (e) => {
       this.remember = e.target.checked;
       localStorage.setItem(CONFIG.STORAGE_KEYS.REMEMBER, this.remember);
@@ -240,7 +241,84 @@ const Auth = {
     }
     return true;
   },
-  
+
+  showChangePasswordModal() {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Change Password</h3>
+          <button class="modal-close" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="changePwdForm">
+            <div class="field">
+              <label for="cpCurrent">Current Password</label>
+              <input type="password" id="cpCurrent" name="currentPassword" autocomplete="current-password" required>
+            </div>
+            <div class="field">
+              <label for="cpNew">New Password</label>
+              <input type="password" id="cpNew" name="newPassword" autocomplete="new-password" required minlength="4">
+            </div>
+            <div class="field">
+              <label for="cpConfirm">Confirm New Password</label>
+              <input type="password" id="cpConfirm" name="confirmPassword" autocomplete="new-password" required minlength="4">
+            </div>
+            <div class="error-msg hidden"></div>
+            <div class="btn-group">
+              <button type="submit" class="btn-primary">Change Password</button>
+              <button type="button" class="btn-secondary modal-close">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    
+    setTimeout(() => modal.querySelector('#cpCurrent')?.focus(), 100);
+    
+    modal.querySelectorAll('.modal-close').forEach(btn => {
+      btn.addEventListener('click', () => modal.remove());
+    });
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.remove();
+    });
+    
+    modal.querySelector('#changePwdForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.handleChangePasswordSubmit(e.target, modal);
+    });
+  },
+
+  async handleChangePasswordSubmit(form, modal) {
+    const currentPassword = form.currentPassword.value;
+    const newPassword = form.newPassword.value;
+    const confirmPassword = form.confirmPassword.value;
+    
+    if (!currentPassword || !newPassword || !confirmPassword) return;
+    if (newPassword !== confirmPassword) {
+      this.showError(form, 'New passwords do not match');
+      return;
+    }
+    
+    const btn = form.querySelector('button[type="submit"]');
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Changing...';
+    
+    try {
+      await API.changePassword(this.token, currentPassword, newPassword, confirmPassword);
+      this.showToast('Password changed successfully');
+      modal.remove();
+    } catch (err) {
+      this.showError(form, err.message || 'Failed to change password');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalText;
+    }
+  },
+
   showError(form, msg) {
     let errEl = form.querySelector('.error-msg');
     if (!errEl) {
