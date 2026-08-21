@@ -11,11 +11,13 @@ const Receipt = {
   selectedEmployee: null,
   
   async init() {
+    console.log('[NADEU] Receipt.init() called');
     this.form = document.getElementById('receiptForm');
     this.recentTable = document.getElementById('recentTable');
     this.bindEvents();
     FormPersist.restore(this.form);
     await Employee.load();
+    console.log('[NADEU] Employee loaded, cache size:', Employee.cache.length);
     this.loadRecent();
     
     // Set default amount
@@ -327,6 +329,7 @@ const Receipt = {
   },
   
   async loadRecent() {
+    console.log('[NADEU] loadRecent() called, Auth.token:', Auth.token ? 'present' : 'MISSING');
     if (!Auth.token) return;
     
     try {
