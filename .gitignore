@@ -1,0 +1,15 @@
+# Archives
+_Archieve/
+
+# Local secrets & references (never push to GitHub)
+.env.original
+.env
+.env.*.local
+*.secret
+*_KEY.json
+
+# Local tooling
+node_modules/
+.DS_Store
+Thumbs.db
+*.log

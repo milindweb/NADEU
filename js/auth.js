@@ -3,12 +3,46 @@
  * One-click login with localStorage, module guard
  */
 
+// Theme management
+const Theme = {
+  init() {
+    const saved = localStorage.getItem('nadeu_theme') || 'light';
+    this.apply(saved);
+    this.bindToggle();
+  },
+  
+  apply(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('nadeu_theme', theme);
+    this.updateIcon(theme);
+  },
+  
+  toggle() {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    this.apply(next);
+  },
+  
+  updateIcon(theme) {
+    const btn = document.getElementById('themeToggle');
+    if (btn) {
+      btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+      btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    }
+  },
+  
+  bindToggle() {
+    document.getElementById('themeToggle')?.addEventListener('click', () => this.toggle());
+  }
+};
+
 const Auth = {
   token: null,
   user: null,
   remember: false,
   
   init() {
+    Theme.init();
     this.token = localStorage.getItem(CONFIG.STORAGE_KEYS.TOKEN);
     this.remember = localStorage.getItem(CONFIG.STORAGE_KEYS.REMEMBER) === 'true';
     
