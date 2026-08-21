@@ -3,7 +3,7 @@
 A mobile-first, compact receipt entry form with auto-search, built on Google Apps Script + Google Sheets.
 
 **Repo:** https://github.com/milindweb/NADEU  
-**Frontend:** Deployed on Cloudflare Pages (frontend/ folder)
+**Frontend:** Deployed on Cloudflare Pages (root folder)
 
 ## 🚀 Features
 
@@ -28,16 +28,16 @@ NADEU/
 │   ├── employee.gs        # Employee Master (standalone)
 │   ├── receipt.gs         # Receipt CRUD + pagination
 │   └── api.gs             # Router with module guard
-├── frontend/              # Static frontend (deploy to Cloudflare Pages)
-│   ├── index.html         # Single-page app
-│   ├── css/style.css      # Mobile-first, ~3KB
-│   ├── js/
-│   │   ├── config.js      # API endpoint config
-│   │   ├── api-client.js  # API wrapper
-│   │   ├── auth.js        # Login, session, module guard
-│   │   ├── employee.js    # Search, cache
-│   │   └── receipt.js     # Form, validation, table
-│   └── manifest.json      # PWA manifest
+├── css/
+│   └── style.css          # Mobile-first, ~3KB
+├── js/
+│   ├── config.js          # API endpoint config
+│   ├── api-client.js      # API wrapper
+│   ├── auth.js            # Login, session, module guard
+│   ├── employee.js        # Search, cache
+│   └── receipt.js         # Form, validation, table
+├── index.html             # Single-page app (root)
+├── manifest.json          # PWA manifest
 ├── .env.original          # Sheet IDs reference (gitignored)
 ├── srs.md                 # Software Requirements Spec
 ├── CHANGELOG.md           # Version history
@@ -80,7 +80,7 @@ NADEU/
 ### 3. Frontend Deployment (Cloudflare Pages)
 
 1. **Configure API URL**
-   - Edit `frontend/js/config.js`:
+   - Edit `js/config.js`:
      ```javascript
      API_URL: 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec'
      ```
@@ -100,7 +100,7 @@ NADEU/
    - Connect to Git: `milindweb/NADEU`
    - Build settings:
      - **Build command:** (leave empty / none)
-     - **Build output directory:** `frontend`
+     - **Build output directory:** `/` (root)
      - **Root directory:** (leave empty)
    - Environment variables (if needed):
      - None required for static frontend
@@ -145,8 +145,8 @@ Auto-created by `setupAll()`
 
 ### Local Development
 ```bash
-# Serve frontend locally
-cd frontend && npx serve .
+# Serve frontend locally (from project root)
+npx serve .
 
 # Or use any static server
 python3 -m http.server 8000

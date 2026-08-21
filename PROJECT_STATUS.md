@@ -28,19 +28,19 @@
 
 ### Infrastructure
 - [x] 3 Google Spreadsheets created
-- [x] GitHub repo: https://github.com/milindweb/NADEU
+- [x] GitHub repo: https://github.com/milindweb/NADEU (pushed)
 - [x] Fine-grained PAT added to .env.original
 - [x] .env.original with all Sheet IDs, GitHub info
 - [x] README.md with full deployment guide
 - [x] CHANGELOG.md
 - [x] PROJECT_STATUS.md
+- [x] Frontend moved to root (no frontend/ folder)
 
 ## 🔄 In Progress
 - [ ] Deploy Apps Script as Web App
 - [ ] Run `setupAll()` to initialize sheets
-- [ ] Update frontend/js/config.js with Apps Script URL
-- [ ] Push to GitHub (milindweb/NADEU)
-- [ ] Deploy frontend to Cloudflare Pages
+- [ ] Update js/config.js with Apps Script URL
+- [ ] Deploy frontend to Cloudflare Pages (output: /)
 - [ ] End-to-end testing
 
 ## 📋 Pending
@@ -57,14 +57,14 @@
 - **Receipt:** https://docs.google.com/spreadsheets/d/1CzgHgaqE48IyFdCIKDbH0bW_fuHjXpgLsDYSKWXllVU/edit
 
 ### Apps Script Deployment
-After deploying, update `frontend/js/config.js`:
+After deploying, update `js/config.js`:
 ```javascript
 API_URL: 'https://script.google.com/macros/s/<DEPLOYMENT_ID>/exec'
 ```
 
 ### Cloudflare Pages Settings
 - **Build command:** (none)
-- **Output directory:** `frontend`
+- **Build output directory:** `/` (root)
 - **Root directory:** (empty)
 
 ### GitHub
