@@ -82,6 +82,20 @@ const Receipt = {
       this.pagination.page = 1;
       this.loadRecent();
     });
+    
+    // Sort headers via event delegation
+    document.getElementById('recentTable')?.addEventListener('click', (e) => {
+      const th = e.target.closest('th[data-sort]');
+      if (!th) return;
+      const col = th.dataset.sort;
+      if (this.pagination.sortBy === col) {
+        this.pagination.sortDir = this.pagination.sortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.pagination.sortBy = col;
+        this.pagination.sortDir = 'asc';
+      }
+      this.loadRecent();
+    });
   },
   
   renderSearchResults(results) {
@@ -326,7 +340,9 @@ const Receipt = {
       );
       
       const result = res.data;
-      this.renderRecentTable(result.data || [], result.pagination || { page: 1, pageSize: 10, total: 0, totalPages: 0 });
+      const receipts = Array.isArray(result) ? result : (Array.isArray(result?.data) ? result.data : []);
+      const pag = result?.pagination || { page: 1, pageSize: 10, total: 0, totalPages: 0 };
+      this.renderRecentTable(receipts, pag);
     } catch (err) {
       console.error('Failed to load recent:', err);
       const tbody = document.getElementById('recentTbody');
@@ -338,9 +354,11 @@ const Receipt = {
     const tbody = document.getElementById('recentTbody');
     const paginationEl = document.getElementById('pagination');
     
+    if (!tbody) return;
+    
     if (!data.length) {
       tbody.innerHTML = '<tr><td colspan="7" class="empty">No receipts yet</td></tr>';
-      paginationEl.innerHTML = '';
+      if (paginationEl) paginationEl.innerHTML = '';
       return;
     }
     
@@ -361,20 +379,8 @@ const Receipt = {
       row.addEventListener('click', () => this.loadForEdit(row.dataset.id));
     });
     
-    // Headers for sorting
+    // Sort indicator on headers
     document.querySelectorAll('#recentTable th[data-sort]').forEach(th => {
-      th.addEventListener('click', () => {
-        const col = th.dataset.sort;
-        if (this.pagination.sortBy === col) {
-          this.pagination.sortDir = this.pagination.sortDir === 'asc' ? 'desc' : 'asc';
-        } else {
-          this.pagination.sortBy = col;
-          this.pagination.sortDir = 'asc';
-        }
-        this.loadRecent();
-      });
-      
-      // Update sort indicator
       th.classList.remove('sort-asc', 'sort-desc');
       if (th.dataset.sort === this.pagination.sortBy) {
         th.classList.add(this.pagination.sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
@@ -387,7 +393,8 @@ const Receipt = {
   
   renderPagination(p) {
     const el = document.getElementById('pagination');
-    if (!el || p.totalPages <= 1) { el.innerHTML = ''; return; }
+    if (!el) return;
+    if (p.totalPages <= 1) { el.innerHTML = ''; return; }
     
     let html = '';
     if (p.page > 1) html += `<button data-page="${p.page - 1}">← Prev</button>`;
