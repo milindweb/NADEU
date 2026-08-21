@@ -1,5 +1,5 @@
 # Archives
-_Archieve/
+_archive/
 
 # Local secrets & references (never push to GitHub)
 .env.original

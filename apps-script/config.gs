@@ -29,7 +29,7 @@ var CONFIG = {
   // ===== DEFAULT ADMIN (created on first setup) =====
   defaultAdmin: {
     username: 'admin',
-    password: '0000',
+    password: 'admin123',
     name: 'Administrator',
     email: 'admin@nadeu.local',
     mobile: '9999999999'
