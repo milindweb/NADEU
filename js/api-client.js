@@ -12,7 +12,7 @@ const API = {
     try {
       res = await fetch(CONFIG.API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(body)
       });
     } catch (err) {
