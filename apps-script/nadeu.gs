@@ -7,10 +7,10 @@ function getOfficeBearers() {
   var ss = ss_(CONFIG.nadeuSheetId);
   var sheet = ss.getSheetByName(CONFIG.nadeu.bearersSheet);
   if (!sheet) {
-    return [];
+    return json_({ ok: true, data: [] });
   }
   var data = sheet.getDataRange().getValues();
-  if (data.length < 2) return [];
+  if (data.length < 2) return json_({ ok: true, data: [] });
 
   var headers = data[0];
   var result = [];
@@ -21,5 +21,5 @@ function getOfficeBearers() {
     }
     result.push(row);
   }
-  return result;
+  return json_({ ok: true, data: result });
 }

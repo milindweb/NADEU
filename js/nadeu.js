@@ -19,10 +19,13 @@ const Nadeu = {
 
     try {
       var res = await API.getOfficeBearers();
+      console.log('Office bearers response:', res);
       this.bearers = Array.isArray(res.data) ? res.data : (Array.isArray(res) ? res : []);
+      console.log('Office bearers parsed:', this.bearers.length, 'records');
       this.renderBearers();
     } catch (err) {
-      container.innerHTML = '<div class="bearers-empty">Failed to load office bearers. Please try again later.</div>';
+      console.error('Failed to load office bearers:', err);
+      container.innerHTML = '<div class="bearers-empty">Failed to load office bearers: ' + err.message + '</div>';
     }
   },
 

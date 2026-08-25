@@ -81,7 +81,18 @@ function routePublic(fn, args, body) {
   };
   var handler = map[fn];
   if (!handler) return fail_('Unknown endpoint: ' + fn);
-  return handler.apply(null, [body].concat(args));
+  
+  try {
+    var result = handler.apply(null, [body].concat(args));
+    // If handler already returned a ContentService output (json_), pass it through
+    if (typeof result === 'object' && result !== null && typeof result.getContent === 'function') {
+      return result;
+    }
+    return typeof result === 'string' ? result : json_({ ok: true, data: result });
+  } catch (err) {
+    log_(err.message || err);
+    return fail_(err.message || 'Server error');
+  }
 }
 
 function routeProtected(fn, args, body, user) {
