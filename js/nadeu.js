@@ -46,7 +46,7 @@ const Nadeu = {
     if (this.currentUnit === 'All') return this.bearers;
     var unit = this.currentUnit.toUpperCase();
     return this.bearers.filter(function(b) {
-      var loc = (b['Unit'] || b['Location'] || '').toUpperCase();
+      var loc = (b['UNIT'] || b['Unit'] || b['Location'] || '').toUpperCase();
       return loc.indexOf(unit) !== -1;
     });
   },
