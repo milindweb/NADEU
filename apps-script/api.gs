@@ -14,7 +14,7 @@ function doPost(e) {
     var token = body.token || '';
     
     // Public endpoints (no auth required)
-    var publicEndpoints = ['login', 'register', 'forgotPassword', 'check', 'currentUser'];
+    var publicEndpoints = ['login', 'register', 'forgotPassword', 'check', 'currentUser', 'getOfficeBearers'];
     if (publicEndpoints.indexOf(fn) !== -1) {
       return routePublic(fn, args, body);
     }
@@ -76,7 +76,8 @@ function routePublic(fn, args, body) {
     'register': authRegister_,
     'forgotPassword': authForgotPassword_,
     'check': authCheck_,
-    'currentUser': currentUserFromToken_
+    'currentUser': currentUserFromToken_,
+    'getOfficeBearers': getOfficeBearers
   };
   var handler = map[fn];
   if (!handler) return fail_('Unknown endpoint: ' + fn);

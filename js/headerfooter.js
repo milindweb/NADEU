@@ -2,8 +2,8 @@
  * headerfooter.js - Reusable Site Header & Footer Component
  *
  * Usage:
- *   <div id="header"></div>   → SiteHeader renders into this
- *   <div id="footer"></div>   → SiteFooter renders into this
+ *   <div id="header"></div>   -> SiteHeader renders into this
+ *   <div id="footer"></div>   -> SiteFooter renders into this
  *   <script src="js/headerfooter.js"></script>
  *
  * API:
@@ -14,15 +14,56 @@
  *   SiteHeader.updateUser()       - refresh user badge after login/logout
  */
 const SiteHeader = {
+  isPortal() {
+    return document.body && document.body.dataset.page === 'portal';
+  },
+
   render(container) {
     if (!container) return;
-    const isLoggedIn = !!localStorage.getItem('nadeu_token');
-    const username = localStorage.getItem('nadeu_username') || 'User';
-    
+
+    if (this.isPortal()) {
+      this.renderPublic(container);
+    } else {
+      this.renderApp(container);
+    }
+
+    this.bindEvents(container);
+  },
+
+  renderPublic(container) {
+    container.innerHTML =
+      '<header class="site-header portal-header">' +
+        '<div class="header-inner">' +
+          '<div class="header-left">' +
+            '<a href="index.html" class="header-logo">' +
+              '<img src="img/logo-192.png" alt="NAD Employees Union" width="32" height="32">' +
+              '<div class="header-title-wrap">' +
+                '<span class="header-title">NAD Employees Union</span>' +
+                '<span class="header-subtitle">Unity &bull; Solidarity &bull; Strength</span>' +
+              '</div>' +
+            '</a>' +
+          '</div>' +
+          '<button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation">' +
+            '<span></span><span></span><span></span>' +
+          '</button>' +
+          '<nav class="header-nav" id="headerNav">' +
+            '<a href="#about">About</a>' +
+            '<a href="#bearers">Bearers</a>' +
+            '<a href="#contact">Contact</a>' +
+            '<a href="login.html" class="header-btn">Member Login</a>' +
+          '</nav>' +
+        '</div>' +
+      '</header>';
+  },
+
+  renderApp(container) {
+    var isLoggedIn = !!localStorage.getItem('nadeu_token');
+    var username = localStorage.getItem('nadeu_username') || 'User';
+
     container.innerHTML =
       '<header class="site-header app-header">' +
         '<div class="header-left">' +
-          '<a href="index.html" class="header-logo" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:10px">' +
+          '<a href="index.html" class="header-logo">' +
             '<img src="img/logo-192.png" alt="NAD Employees Union" width="32" height="32" style="border-radius:50%">' +
             '<h1>NAD Employees Union</h1>' +
           '</a>' +
@@ -36,27 +77,42 @@ const SiteHeader = {
             : '<a href="login.html" class="header-btn">Login</a>') +
         '</div>' +
       '</header>';
-    
-    this.bindEvents(container);
   },
 
   bindEvents(container) {
-    const logoutBtn = container.querySelector('#logoutBtn');
+    var logoutBtn = container.querySelector('#logoutBtn');
     if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => this.handleLogout());
-    }
-    
-    const themeToggle = container.querySelector('#themeToggle');
-    if (themeToggle) {
-      themeToggle.addEventListener('click', () => this.handleThemeToggle());
+      logoutBtn.addEventListener('click', function() { SiteHeader.handleLogout(); });
     }
 
-    const changePwdBtn = container.querySelector('#changePwdBtn');
+    var themeToggle = container.querySelector('#themeToggle');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', function() { SiteHeader.handleThemeToggle(); });
+    }
+
+    var changePwdBtn = container.querySelector('#changePwdBtn');
     if (changePwdBtn) {
-      changePwdBtn.addEventListener('click', () => {
+      changePwdBtn.addEventListener('click', function() {
         if (typeof Auth !== 'undefined' && Auth.showChangePasswordModal) {
           Auth.showChangePasswordModal();
         }
+      });
+    }
+
+    // Mobile menu toggle
+    var menuToggle = container.querySelector('#mobileMenuToggle');
+    var nav = container.querySelector('#headerNav');
+    if (menuToggle && nav) {
+      menuToggle.addEventListener('click', function() {
+        nav.classList.toggle('open');
+        menuToggle.classList.toggle('active');
+      });
+      // Close menu on nav link click
+      nav.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', function() {
+          nav.classList.remove('open');
+          menuToggle.classList.remove('active');
+        });
       });
     }
   },
@@ -72,16 +128,16 @@ const SiteHeader = {
   },
 
   handleThemeToggle() {
-    const html = document.documentElement;
-    const isDark = html.getAttribute('data-theme') === 'dark';
+    var html = document.documentElement;
+    var isDark = html.getAttribute('data-theme') === 'dark';
     html.setAttribute('data-theme', isDark ? 'light' : 'dark');
     localStorage.setItem('nadeu_theme', isDark ? 'light' : 'dark');
   },
 
   updateUser() {
-    const badge = document.getElementById('currentUser');
+    var badge = document.getElementById('currentUser');
     if (badge) {
-      const username = localStorage.getItem('nadeu_username') || 'User';
+      var username = localStorage.getItem('nadeu_username') || 'User';
       badge.textContent = username;
     }
     this.render(document.getElementById('header'));
@@ -98,7 +154,7 @@ const SiteFooter = {
     container.innerHTML =
       '<footer class="site-footer">' +
         '<div class="footer-inner">' +
-          '<p class="footer-founder">Founder – Mayur Kamal Vitthal Mhatre</p>' +
+          '<p class="footer-founder">Founder &ndash; Mayur Kamal Vitthal Mhatre</p>' +
           '<p class="footer-copy">&copy; ' + new Date().getFullYear() + ' NAD Employees Union. All rights reserved.</p>' +
         '</div>' +
       '</footer>';

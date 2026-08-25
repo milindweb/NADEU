@@ -8,6 +8,7 @@ var CONFIG = {
   authSheetId: '1hk3FWRTFcQbwfuTYhtKPWZfDmHLxqzCtGjzpfYteUYk',
   employeeSheetId: '1y22M8qo2aK4DFYsI7S7nLDzP33GFbzo9TsDlEX1jL98',
   receiptSheetId: '1CzgHgaqE48IyFdCIKDbH0bW_fuHjXpgLsDYSKWXllVU',
+  nadeuSheetId: '1yEJvqmlTnxhqzxXsF0mTj77TbpGZUKGCTTmC5gA0ftE',
 
   // ===== SHEET/TABS NAMES =====
   auth: {
@@ -19,6 +20,9 @@ var CONFIG = {
   },
   receipt: {
     sheetName: 'Receipts'
+  },
+  nadeu: {
+    bearersSheet: 'Office Bearers'
   },
 
   // ===== MODULE NAMES =====

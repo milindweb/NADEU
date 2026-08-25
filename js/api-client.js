@@ -113,5 +113,10 @@ logout(token) {
   
   deleteReceipt(id, token) {
     return this.call('deleteReceipt', [id], token);
+  },
+
+  // NADEU (public)
+  getOfficeBearers() {
+    return this.call('getOfficeBearers', {}, null);
   }
 };

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1a3a5f">
+  <title>NAD Employees Union - Receipt</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/headerfooter.css">
+  <link rel="manifest" href="data/manifest.json">
+  <link rel="icon" type="image/png" sizes="48x48" href="img/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+  <meta name="msapplication-TileColor" content="#1a3a5f">
+  <meta name="msapplication-TileImage" content="img/logo-144.png">
+</head>
+<body>
+  <!-- Auth guard: redirect to login if no token -->
+  <script>
+    (function() {
+      var token = localStorage.getItem('nadeu_token');
+      var remember = localStorage.getItem('nadeu_remember') === 'true';
+      if (!token && !remember) {
+        window.location.href = 'login.html';
+      }
+    })();
+  </script>
+
+  <!-- Main App -->
+  <div id="app" class="screen">
+    <div id="header"></div>
+
+    <main class="app-main">
+      <!-- Search Box -->
+      <section class="search-section">
+        <div class="search-box">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="search" id="empSearch" name="empSearch" placeholder="Search: Token, Name, Mobile, Location, Rank, Post..." autocomplete="off">
+          <button id="clearSearch" class="icon-btn hidden" title="Clear">&#10005;</button>
+        </div>
+        <div id="searchResults" class="dropdown hidden"></div>
+      </section>
+
+      <!-- Receipt Form -->
+      <form id="receiptForm" class="receipt-form" novalidate>
+        <div class="form-row">
+          <div class="field">
+            <label>Employee Name <span class="req">*</span></label>
+            <input type="text" name="empName" required autocomplete="name">
+          </div>
+          <div class="field">
+            <label>Token No. <span class="req">*</span></label>
+            <input type="text" name="empToken" required autocomplete="off">
+          </div>
+        </div>
+
+        <fieldset class="radio-group">
+          <legend>Designation <span class="req">*</span></legend>
+          <div class="field" style="margin-bottom: 8px;">
+            <input type="text" id="designationInput" name="designationInput" placeholder="Type or edit designation" autocomplete="off">
+          </div>
+          <div class="radio-grid" id="designationRadios">
+            <label class="radio-label"><input type="radio" name="designation" value="T-MATE"> T-MATE</label>
+            <label class="radio-label"><input type="radio" name="designation" value="SK"> SK</label>
+            <label class="radio-label"><input type="radio" name="designation" value="HSK-I"> HSK-I</label>
+            <label class="radio-label"><input type="radio" name="designation" value="HSK-II"> HSK-II</label>
+            <label class="radio-label"><input type="radio" name="designation" value="MCM"> MCM</label>
+          </div>
+        </fieldset>
+
+        <div class="form-row">
+          <div class="field">
+            <label>Section</label>
+            <input type="text" name="section" placeholder="Optional">
+          </div>
+          <div class="field">
+            <label>Mobile No.</label>
+            <input type="tel" name="empMobile" autocomplete="tel" placeholder="Optional">
+          </div>
+        </div>
+
+        <fieldset class="radio-group">
+          <legend>Location (Depot) <span class="req">*</span></legend>
+          <div class="radio-grid" id="locationRadios">
+            <label class="radio-label"><input type="radio" name="location" value="NAD(K)" required> NAD(K)</label>
+            <label class="radio-label"><input type="radio" name="location" value="NAD(T)"> NAD(T)</label>
+            <label class="radio-label"><input type="radio" name="location" value="NAD(M)"> NAD(M)</label>
+            <label class="radio-label"><input type="radio" name="location" value="NAD(KR)"> NAD(KR)</label>
+          </div>
+        </fieldset>
+
+        <div class="form-row">
+          <div class="field">
+            <label>Amount (&#8377;) <span class="req">*</span></label>
+            <input type="number" name="amount" value="200" min="0" step="1" required>
+          </div>
+          <div class="field">
+            <label>Receipt No. <span class="req">*</span></label>
+            <input type="text" name="receiptNo" required autocomplete="off" placeholder="Manual entry">
+          </div>
+        </div>
+
+        <fieldset class="radio-group inline">
+          <legend>Status <span class="req">*</span></legend>
+          <div class="radio-grid">
+            <label class="radio-label"><input type="radio" name="status" value="Paid" checked required> Paid</label>
+            <label class="radio-label"><input type="radio" name="status" value="Pending"> Pending</label>
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label>Remark</label>
+          <textarea name="remark" rows="2" placeholder="Optional"></textarea>
+        </div>
+
+        <div class="btn-group">
+          <button type="submit" class="btn-primary">Submit</button>
+          <button type="button" id="clearForm" class="btn-secondary">Clear</button>
+        </div>
+        <div id="formMessage" class="form-message hidden"></div>
+      </form>
+
+      <!-- Recent Entries - Collapsible Table with Pagination -->
+      <section id="recentEntries" class="recent-panel">
+        <div class="panel-header">
+          <h3>Recent Receipts</h3>
+          <div class="panel-controls">
+            <button id="refreshRecent" class="icon-btn" title="Refresh">&#8635;</button>
+            <button id="toggleRecent" class="icon-btn" title="Collapse/Expand">&#9660;</button>
+          </div>
+        </div>
+        <div id="recentList">
+          <div class="table-wrapper">
+            <table id="recentTable">
+              <thead>
+                <tr>
+                  <th>Receipt No.</th>
+                  <th>Date</th>
+                  <th>Name</th>
+                  <th>Token</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Created</th>
+                </tr>
+              </thead>
+              <tbody id="recentTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      </main>
+
+  <div id="footer"></div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="js/config.js?v=3"></script>
+  <script src="js/api-client.js?v=3"></script>
+  <script src="js/auth.js?v=3"></script>
+  <script src="js/employee.js?v=3"></script>
+  <script src="js/receipt.js?v=3"></script>
+  <script src="js/headerfooter.js"></script>
+</body>
+</html>

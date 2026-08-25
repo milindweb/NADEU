@@ -4,9 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#1a3a5f">
-  <title>NAD Employees Union - Receipt</title>
+  <title>NAD Employees Union - Unity &bull; Solidarity &bull; Strength</title>
+  <script src="js/config.js"></script>
+  <script>const PAGE_CONFIG = { title: 'NAD Employees Union', description: 'NAD Employees Union - Official portal for NAD employees. Unity, Solidarity, Strength.', canonical: '/' };</script>
+  <script src="js/seo-injector.js"></script>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/headerfooter.css">
+  <link rel="stylesheet" href="css/portal.css">
   <link rel="manifest" href="data/manifest.json">
   <link rel="icon" type="image/png" sizes="48x48" href="img/favicon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
@@ -15,154 +19,99 @@
   <meta name="msapplication-TileColor" content="#1a3a5f">
   <meta name="msapplication-TileImage" content="img/logo-144.png">
 </head>
-<body>
-  <!-- Auth guard: redirect to login if no token -->
-  <script>
-    (function() {
-      var token = localStorage.getItem('nadeu_token');
-      var remember = localStorage.getItem('nadeu_remember') === 'true';
-      if (!token && !remember) {
-        window.location.href = 'login.html';
-      }
-    })();
-  </script>
+<body data-page="portal">
 
-  <!-- Main App -->
-  <div id="app" class="screen">
-    <div id="header"></div>
+  <!-- Header -->
+  <div id="header"></div>
 
-    <main class="app-main">
-      <!-- Search Box -->
-      <section class="search-section">
-        <div class="search-box">
-          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          <input type="search" id="empSearch" name="empSearch" placeholder="Search: Token, Name, Mobile, Location, Rank, Post..." autocomplete="off">
-          <button id="clearSearch" class="icon-btn hidden" title="Clear">&#10005;</button>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-inner">
+      <img src="img/logo-192.png" alt="NAD Employees Union" class="hero-logo">
+      <h1 class="hero-title">NAD Employees Union</h1>
+      <p class="hero-title-hi">&#2349;&#2367;&#2354;&#2366; &#2350; &#2349; &#2367; &#2354; &#2366; &#2350;</p>
+      <p class="hero-recognition">&#2361;&#2366; &#2360;&#2366; &#2360; &#2360; &#2380; &#2364; &#2380; &#2350; &#2366; &#2382; &#2360; &#2380; &#2368; &#2358; &#2366; &#2350; &mdash; Recognised by Ministry of Defence, Govt. of India</p>
+      <p class="hero-founder">Founded by Mayur Kamal Vitthal Mhatre</p>
+      <p class="hero-tagline">Unity &bull; Solidarity &bull; Strength</p>
+      <div class="hero-buttons">
+        <a href="#about" class="hero-btn primary">Our Union</a>
+        <a href="#bearers" class="hero-btn">Office Bearers</a>
+        <a href="login.html" class="hero-btn">Member Login</a>
+        <a href="#contact" class="hero-btn">Contact Us</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="portal-section">
+    <div class="container">
+      <h2 class="section-title">About NAD Employees Union</h2>
+      <div class="about-grid">
+        <div class="about-card">
+          <h3>Mission</h3>
+          <p>To provide NAD Employees Union members with a simple, reliable digital platform for union administration &mdash; making union operations transparent, efficient, and accessible to all members.</p>
         </div>
-        <div id="searchResults" class="dropdown hidden"></div>
-      </section>
-
-      <!-- Receipt Form -->
-      <form id="receiptForm" class="receipt-form" novalidate>
-        <div class="form-row">
-          <div class="field">
-            <label>Employee Name <span class="req">*</span></label>
-            <input type="text" name="empName" required autocomplete="name">
-          </div>
-          <div class="field">
-            <label>Token No. <span class="req">*</span></label>
-            <input type="text" name="empToken" required autocomplete="off">
-          </div>
+        <div class="about-card">
+          <h3>Vision</h3>
+          <p>To promote unity, welfare, dignity and legitimate interests of employees through democratic, transparent and constructive representation.</p>
         </div>
-
-        <fieldset class="radio-group">
-          <legend>Designation <span class="req">*</span></legend>
-          <div class="field" style="margin-bottom: 8px;">
-            <input type="text" id="designationInput" name="designationInput" placeholder="Type or edit designation" autocomplete="off">
-          </div>
-          <div class="radio-grid" id="designationRadios">
-            <label class="radio-label"><input type="radio" name="designation" value="T-MATE"> T-MATE</label>
-            <label class="radio-label"><input type="radio" name="designation" value="SK"> SK</label>
-            <label class="radio-label"><input type="radio" name="designation" value="HSK-I"> HSK-I</label>
-            <label class="radio-label"><input type="radio" name="designation" value="HSK-II"> HSK-II</label>
-            <label class="radio-label"><input type="radio" name="designation" value="MCM"> MCM</label>
-          </div>
-        </fieldset>
-
-        <div class="form-row">
-          <div class="field">
-            <label>Section</label>
-            <input type="text" name="section" placeholder="Optional">
-          </div>
-          <div class="field">
-            <label>Mobile No.</label>
-            <input type="tel" name="empMobile" autocomplete="tel" placeholder="Optional">
-          </div>
+        <div class="about-card">
+          <h3>Objectives</h3>
+          <p>Safeguard the rights and interests of all NAD employees. Promote cooperation and solidarity among members. Represent employee grievances to management and government authorities.</p>
         </div>
+      </div>
+    </div>
+  </section>
 
-        <fieldset class="radio-group">
-          <legend>Location (Depot) <span class="req">*</span></legend>
-          <div class="radio-grid" id="locationRadios">
-            <label class="radio-label"><input type="radio" name="location" value="NAD(K)" required> NAD(K)</label>
-            <label class="radio-label"><input type="radio" name="location" value="NAD(T)"> NAD(T)</label>
-            <label class="radio-label"><input type="radio" name="location" value="NAD(M)"> NAD(M)</label>
-            <label class="radio-label"><input type="radio" name="location" value="NAD(KR)"> NAD(KR)</label>
-          </div>
-        </fieldset>
+  <!-- Office Bearers Section -->
+  <section id="bearers" class="portal-section alt">
+    <div class="container">
+      <h2 class="section-title">Office Bearers</h2>
+      <p class="section-sub">43-member elected body serving NAD employees across all units</p>
 
-        <div class="form-row">
-          <div class="field">
-            <label>Amount (&#8377;) <span class="req">*</span></label>
-            <input type="number" name="amount" value="200" min="0" step="1" required>
-          </div>
-          <div class="field">
-            <label>Receipt No. <span class="req">*</span></label>
-            <input type="text" name="receiptNo" required autocomplete="off" placeholder="Manual entry">
-          </div>
+      <!-- Unit Filter -->
+      <div class="unit-filter">
+        <button class="unit-filter-btn active" data-unit="All">All</button>
+        <button class="unit-filter-btn" data-unit="NAD (K)">NAD (K)</button>
+        <button class="unit-filter-btn" data-unit="NAD (T)">NAD (T)</button>
+        <button class="unit-filter-btn" data-unit="NAD (MB)">NAD (MB)</button>
+      </div>
+
+      <div id="bearersList" class="bearers-container"></div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="portal-section">
+    <div class="container">
+      <h2 class="section-title">Contact Us</h2>
+      <div class="contact-grid">
+        <div class="contact-card">
+          <h3>Office Address</h3>
+          <p>Shop No. 09, Shreyash Appt.,<br>Uran, Navi Mumbai</p>
         </div>
-
-        <fieldset class="radio-group inline">
-          <legend>Status <span class="req">*</span></legend>
-          <div class="radio-grid">
-            <label class="radio-label"><input type="radio" name="status" value="Paid" checked required> Paid</label>
-            <label class="radio-label"><input type="radio" name="status" value="Pending"> Pending</label>
-          </div>
-        </fieldset>
-
-        <div class="field">
-          <label>Remark</label>
-          <textarea name="remark" rows="2" placeholder="Optional"></textarea>
+        <div class="contact-card">
+          <h3>Email</h3>
+          <p><a href="mailto:nadeu2016@gmail.com">nadeu2016@gmail.com</a></p>
         </div>
-
-        <div class="btn-group">
-          <button type="submit" class="btn-primary">Submit</button>
-          <button type="button" id="clearForm" class="btn-secondary">Clear</button>
+        <div class="contact-card">
+          <h3>Mobile</h3>
+          <p><a href="tel:9082080690">9082080690</a></p>
         </div>
-        <div id="formMessage" class="form-message hidden"></div>
-      </form>
-
-      <!-- Recent Entries - Collapsible Table with Pagination -->
-      <section id="recentEntries" class="recent-panel">
-        <div class="panel-header">
-          <h3>Recent Receipts</h3>
-          <div class="panel-controls">
-            <button id="refreshRecent" class="icon-btn" title="Refresh">&#8635;</button>
-            <button id="toggleRecent" class="icon-btn" title="Collapse/Expand">&#9660;</button>
-          </div>
+        <div class="contact-card">
+          <h3>President</h3>
+          <p><strong>Pravin Ingle</strong><br><a href="tel:9969200976">9969200976</a></p>
         </div>
-        <div id="recentList">
-          <div class="table-wrapper">
-            <table id="recentTable">
-              <thead>
-                <tr>
-                  <th>Receipt No.</th>
-                  <th>Date</th>
-                  <th>Name</th>
-                  <th>Token</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                  <th>Created</th>
-                </tr>
-              </thead>
-              <tbody id="recentTbody"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
+      </div>
+    </div>
+  </section>
 
-      </main>
-
+  <!-- Footer -->
   <div id="footer"></div>
 
-  <!-- Toast Container -->
-  <div id="toastContainer"></div>
-
   <!-- Scripts -->
-  <script src="js/config.js?v=3"></script>
-  <script src="js/api-client.js?v=3"></script>
-  <script src="js/auth.js?v=3"></script>
-  <script src="js/employee.js?v=3"></script>
-  <script src="js/receipt.js?v=3"></script>
+  <script src="js/api-client.js"></script>
   <script src="js/headerfooter.js"></script>
+  <script src="js/nadeu.js"></script>
 </body>
 </html>

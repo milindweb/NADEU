@@ -7,6 +7,7 @@ const CONFIG = {
   // UPDATE THIS after deploying Apps Script as Web App
   API_URL: 'https://script.google.com/macros/s/AKfycbywcZhqNqO1L_K-uCgMnPBvoF4e0XHXeXvQH0TZ5UGlU215_B5yR7SojRoopuvztTtiLg/exec',
   MODULE: 'receipt',
+  NADEU_MODULE: 'nadeu',
   STORAGE_KEYS: {
     TOKEN: 'nadeu_token',
     USER: 'nadeu_user',

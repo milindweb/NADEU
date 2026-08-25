@@ -4,7 +4,7 @@
 document.addEventListener('DOMContentLoaded', function () {
   var token = localStorage.getItem(CONFIG.STORAGE_KEYS.TOKEN);
   if (token) {
-    window.location.href = 'index.html';
+    window.location.href = 'receipt.html';
     return;
   }
 
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
       localStorage.setItem(CONFIG.STORAGE_KEYS.TOKEN, res.user.token);
       localStorage.setItem(CONFIG.STORAGE_KEYS.USER, JSON.stringify(res.user));
       localStorage.setItem(CONFIG.STORAGE_KEYS.REMEMBER, remember);
-      window.location.href = 'index.html';
+      window.location.href = 'receipt.html';
     }).catch(function (err) {
       msg.className = 'auth-msg error';
       msg.textContent = err.message || 'Login failed. Try again.';
